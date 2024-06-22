@@ -1,0 +1,241 @@
+body {
+    font-size: 16px;        /* 基本フォントサイズ */
+    margin-bottom: 120px;   /* ページ下部の余白幅 */
+}
+
+/* 見出し */
+div#header {
+    position: fixed !important; 
+    position: absolute; 
+    top: 0; 
+    left: 0;
+    width: 100%;
+    height: 80px; /* div#checkLists の margin-top と合わせる */
+    border-bottom: 1px #e0e0e0 solid;
+    z-index: 100;
+}
+div#title-banner {
+    font-size: 150%;
+    font-weight: bold;
+    text-align: center;
+    padding: 15px;
+    width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* チェック項目のカウンター */
+div#counter {
+    font-size: 80%;
+    text-align: center;
+    width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+/* ラッパー */
+div.wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    margin-right: auto;
+    margin-left: auto;
+}
+div#checkLists {
+    margin-top: 80px; /* div#header の height と合わせる */
+}
+
+/* コンテンツエリア */
+div.contents {
+    text-align: left;
+}
+
+/* はじめのメッセージ */
+div.mesg-box {
+    font-size: 110%;
+    padding: 20px;
+    border: solid 1px #99ffff;
+    border-radius: 10px;
+    background-color: #ccffff;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+/* チェックリストのテーブル */
+table.main {
+    width: 100%;
+}
+table.main td {
+    padding: 5px;
+    line-height: 1.4;
+    border: solid 1px #808080;
+    text-align: center;
+    vertical-align: middle;
+    height: 35px;
+}
+table.main td.td01 { width: 16%; border: 0;  height: 0; font-size: 0; }
+table.main td.td02 { width: 6%; border: 0;  height: 0; font-size: 0; }
+table.main td.td03 { width: 78%; border: 0;  height: 0; font-size: 0; }
+table.main td.detail {
+    text-align: left;
+    padding-left: 10px;
+}
+table.main td.item-name {
+    background-color: #d4d4d4;
+}
+table.main td.attachments {
+    text-align: left;
+    padding-left: 10px;
+    color: red;
+    font-weight: bold;
+    background-color: #ffccff;
+}
+
+/* チェックボックスのスタイル */
+input.checkbox {
+    transform: scale(1.5);
+    margin: 0;
+    accent-color: #00ff00;
+}
+
+/* メールアドレスとドメインの表示 */
+span.mailaddr {
+    font-size: 150%;
+    font-weight: bold;
+    font-family: "Helvetica Neue", Arial, Meiryo, sans-serif;
+    letter-spacing: 0.12em;
+    word-break: break-all;
+}
+span.numstyle {
+    color: #4169e1;
+}
+span.domain {
+    color: #b7b7b7;
+}
+
+/* 「本文を別ウィンドウに表示する」リンク用 */
+a#openBodyWindow {
+    font-size: 80%;
+}
+
+/* 本文の表示 */
+textarea#mailbody {
+    font-size: 100%;
+    width: 600px;
+    height: 120px;
+    resize: none;
+    overflow: auto;
+    background-color: #f6f6f6;
+}
+
+/* 添付ファイルの容量 */
+span.size {
+    font-size: 80%;
+    color: gray;
+    font-weight: normal;
+    padding-left: 5px;
+}
+
+/* 注意文 */
+.attention {
+    color: red;
+}
+
+/* 線 */
+hr {
+    margin: 0;
+}
+
+/* ボタンを押す前にお伝えしたいメッセージ */
+table.mesg {
+    width: 100%;
+    margin-top: 25px;
+    margin-bottom: 25px;    
+}
+td#preExecMesg {
+    line-height: 1.6;
+    text-align: center;
+    vertical-align: middle;
+    height: 60px;
+}
+
+/* ボタン配置部分 */
+div#buttons {
+    text-align: center;
+}
+
+/* 非活性ボタン */
+input.disabledButton {
+    width: 200px;
+    height: 50px;
+    font-size: 100%;
+    background-color: #f6f6f6;
+    border: 2px #d4d4d4 solid;
+    border-radius: 5px;
+    opacity: 0.7;
+}
+
+/* 後で送信ボタン */
+input.sendLater {
+    width: 200px;
+    height: 50px;
+    font-size: 100%;
+    background-color: blue;
+    color: white;
+    font-weight: bold;
+    border: 2px gray solid;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+input.sendLater:hover {
+    opacity: 1;
+}
+input.sendLater:active {
+    border: 2px blue solid;
+}
+
+/* 送信ボタン */
+input.send {
+    width: 200px;
+    height: 50px;
+    font-size: 100%;
+    background-color: #ffff00;
+    color: red;
+    font-weight: bold;
+    border: 2px gray solid;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.7;   
+}
+input.send:hover {
+    opacity: 1;
+}
+input.send:active {
+    border: 2px blue solid;
+}
+
+/* キャンセルボタン */
+input#cancel {
+    width: 200px;
+    height: 50px;
+    font-size: 100%;
+    background-color: white;
+    border: 2px gray solid;
+    border-radius: 5px;
+    cursor: pointer;
+    opacity: 0.7;
+}
+input#cancel:hover {
+    opacity: 1;
+}
+input#cancel:active {
+    border: 2px blue solid;
+}
+
+/* スペーサー */
+div.space05 { height: 5px; font-size: 0; }
+div.space10 { height: 10px; font-size: 0; }
+div.space20 { height: 20px; font-size: 0; }
+div.space30 { height: 30px; font-size: 0; }
+div.space50 { height: 50px; font-size: 0; }

@@ -1,0 +1,9 @@
+label {
+    font-weight: bold;
+}
+input[type='checkbox'] {
+    margin-right: 6px;
+}
+dd {
+    margin-top: 6px;
+}

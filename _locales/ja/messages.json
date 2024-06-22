@@ -1,0 +1,80 @@
+{
+    "extensionName": {
+        "message": "メール送信前のチェック"
+    },
+    "extensionDescription": {
+        "message": "メールの送信前に、送信先アドレス、本文、添付ファイルなどのチェック項目をポップアップで分かりやすく表示し、メール送信前の確認を促します。"
+    },
+    "title": {
+        "message": "メ　ー　ル　送　信　前　の　チ　ェ　ッ　ク"
+    },
+    "settings": {
+        "message": "設定"
+    },
+    "sendLaterDefault": {
+        "message": "「後で送信」をデフォルトにする。（推奨）"
+    },
+    "sendLaterDefaultDescription": {
+        "message": "この設定にチェックを入れると、すぐにメールは送信されずに送信トレイに入ります。送信トレイに入ったメールの内容に間違いがないことを確認してからメールを送信することで、メール送信前のチェックをより確実にすることができます。すぐにメールを送信したい場合はこの設定のチェックを外してください。"
+    },
+    "subject": {
+        "message": "件名"
+    },
+    "body": {
+        "message": "本文"
+    },
+    "checkTheBox": {
+        "message": "各項目を確認してチェックボックスにチェックを入れてください。"
+    },
+    "checkFromEmailAddress": {
+        "message": "送信元のメールアドレスが正しいことを確認してください。"
+    },
+    "checkToEmailAddress": {
+        "message": "送信先のメールアドレスが正しいことを確認してください。"
+    },
+    "fromDomain": {
+        "message": "送信元ドメイン"
+    },
+    "toDomain": {
+        "message": "送信先ドメイン"
+    },
+    "checkSubjectAndBody": {
+        "message": "件名や本文の内容が正しいことを確認してください。"
+    },
+    "openBodyWindow": {
+        "message": "本文を別ウィンドウに表示する。"
+    },
+    "checkAttachments": {
+        "message": "添付ファイルの内容が正しいことを確認してください。"
+    },
+    "attachment": {
+        "message": "添付ファイル"
+    },
+    "preExecMesgCheckAll": {
+        "message": "すべてのチェックボックスにチェックを入れてください。"
+    },
+    "preExecMesgSendLater01": {
+        "message": "メールは送信されずに送信トレイに入ります。"
+    },
+    "preExecMesgSendLater02": {
+        "message": "送信トレイを右クリックして「未送信メッセージを送信」を選択してメールを送信してください。"
+    },
+    "preExecMesgSendNow": {
+        "message": "メールはすぐに送信されます。間違いがないことを今一度ご確認ください。"
+    },
+    "sendLater": {
+        "message": "送信トレイに入れる"
+    },
+    "send": {
+        "message": "送　信　す　る"
+    },
+    "cancel": {
+        "message": "キャンセル"
+    },
+    "inprocessTitle": {
+        "message": "他のメールの送信前チェックが実行中です。"
+    },
+    "inprocessMesg": {
+        "message": "他のメールの送信前チェックが実行中のため、このメールをチェックすることができません。"
+    }
+}

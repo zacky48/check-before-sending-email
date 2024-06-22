@@ -1,0 +1,80 @@
+{
+    "extensionName": {
+        "message": "Check before sending email"
+    },
+    "extensionDescription": {
+        "message": "Before sending an e-mail, a pop-up window clearly displays check items such as the destination address, body text, and attached files, prompting the sender to confirm before sending the e-mail."
+    },
+    "title": {
+        "message": "CHECK BEFORE SENDING EMAIL"
+    },
+    "settings": {
+        "message": "Settings"
+    },
+    "sendLaterDefault": {
+        "message": "Make \"Send Later\" the default. (Recommended)"
+    },
+    "sendLaterDefaultDescription": {
+        "message": "When this setting is checked, the e-mail will not be sent immediately, but will go into the outbox. By making sure that the content of the email in the outbox is correct before sending the email, you can be more certain that the email is checked before it is sent. Uncheck this setting if you want to send the e-mail immediately."
+    },
+    "subject": {
+        "message": "Subject"
+    },
+    "body": {
+        "message": "Body"
+    },
+    "checkTheBox": {
+        "message": "Please review each item and check the box."
+    },
+    "checkFromEmailAddress": {
+        "message": "Please make sure that the sender's email address is correct."
+    },
+    "checkToEmailAddress": {
+        "message": "Please make sure the destination email address is correct."
+    },
+    "fromDomain": {
+        "message": "Sender Domain"
+    },
+    "toDomain": {
+        "message": "Destination Domain"
+    },
+    "checkSubjectAndBody": {
+        "message": "Please make sure that the subject line and body of the message are correct."
+    },
+    "openBodyWindow": {
+        "message": "Display body of the message in a separate window."
+    },
+    "checkAttachments": {
+        "message": "Please make sure that the attachment is correct."
+    },
+    "attachment": {
+        "message": "Attachment"
+    },
+    "preExecMesgCheckAll": {
+        "message": "Please check all checkboxes."
+    },
+    "preExecMesgSendLater01": {
+        "message": "The email is not sent and goes into the Outbox."
+    },
+    "preExecMesgSendLater02": {
+        "message": "Right-click on the Outbox and select \"Send Unsent Messages\" to send the email."
+    },
+    "preExecMesgSendNow": {
+        "message": "Your email will be sent immediately. Please check once again that there are no mistakes."
+    },
+    "sendLater": {
+        "message": "Put in Outbox"
+    },
+    "send": {
+        "message": "SEND NOW"
+    },
+    "cancel": {
+        "message": "Cancel"
+    },
+    "inprocessTitle": {
+        "message": "Pre-send check of other email is in progress."
+    },
+    "inprocessMesg": {
+        "message": "Unable to check this email because other pre-send checks are in progress."
+    }
+}

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title></title>
+    <meta charset='UTF-8'>
+    <script type='module' src='check.js'></script>
+    <script type='module' src='../common/data-i18n.js'></script>
+    <link rel='stylesheet' type='text/css' media='screen' href='../common/reset.css'>
+    <link rel='stylesheet' type='text/css' media='screen' href='check.css'>
+</head>
+<body>
+    
+<!-- 見出し -->    
+<div id='header'>
+    <div id='title-banner' data-i18n='title'></div>
+    <div id='counter'><span id='checked'></span> / <span id='checkCount'></span></div>
+</div><!-- end header -->    
+
+<div class='wrapper' id='checkLists'>
+    <div class='contents'>
+    
+        <!-- はじめのメッセージ -->
+        <div data-i18n='checkTheBox' class='mesg-box'></div>
+    
+        <!-- 送信元メールアドレス -->
+        <p data-i18n='checkFromEmailAddress'></p>
+        <table class='main'>
+            <tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>
+            <tr>
+                <td data-i18n='fromDomain' colspan='2' class='item-name'></td>
+                <td class='detail'><span id='fromDomain' class='mailaddr'></span></td>
+            </tr>
+            <tr>
+                <td class='item-name'>From</td>
+                <td><input type='checkbox' class='checkbox' name='checkitem'></td>
+                <td class='detail'><span id='fromAddr' class='mailaddr'></span></td>
+            </tr>       
+        </table>
+        <div class='space30'></div>
+    
+        <!-- 件名と本文 -->
+        <p data-i18n='checkSubjectAndBody'></p>
+        <table class='main'>
+            <tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>
+            <tr>
+                <td data-i18n='subject' class='item-name'></td>
+                <td><input type='checkbox' class='checkbox' name='checkitem'></td>
+                <td id='subject' class='detail'></td>
+            </tr>
+            <tr>
+                <td data-i18n='body' class='item-name'></td>
+                <td><input type='checkbox' class='checkbox' name='checkitem'></td>
+                <td class='detail'>
+                    <textarea id='mailbody' disabled></textarea><br>
+                    <a href='#' id='openBodyWindow' data-i18n='openBodyWindow'></a>
+                </td>
+            </tr>       
+        </table>
+        <div class='space30'></div>
+    
+        <!-- 送信先メールアドレス -->
+        <p data-i18n='checkToEmailAddress'></p>
+        <div id='destEmailAddresses'></div>
+        <div class='space20'></div>
+    
+        <!-- 添付ファイル -->
+        <div id='attachments'></div>
+            
+        <div class='space20'></div>
+    </div><!-- end contents -->
+</div><!-- end wrapper -->
+
+<hr size='1'>
+
+<div class='wrapper'>
+    <div class='contents'>
+    
+        <!-- ボタンを押す前にお伝えしたいメッセージ -->
+        <table class='mesg'><tr><td data-i18n='preExecMesgCheckAll' id='preExecMesg'></td></tr></table>
+    
+        <!-- ボタン -->
+        <div id='buttons'>
+            <input type='button' id='sendLater' value='sendLater' class='disabledButton' disabled>
+            <input type='button' id='send' value='send' class='disabledButton' disabled>
+            <input type='button' id='cancel' value='cancel'>
+        </div><!-- end buttons -->
+    </div><!-- end contents -->
+</div><!-- end wrapper -->
+
+</body>
+</html>

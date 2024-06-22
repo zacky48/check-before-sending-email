@@ -175,7 +175,7 @@ export class CheckUtilities {
         r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
         
         // 送信先ドメイン
-        let domain = this.addNumberStyle(d['domain']);
+        let domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
         r += "<tr>";
         r += "<td colspan='2' class='item-name'>" + browser.i18n.getMessage('toDomain') + "</td>";
         r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
@@ -184,7 +184,7 @@ export class CheckUtilities {
         // 送信先メールアドレス
         let address = '';
         for (let i = 0; i < d['dests'].length; i++) {
-            address = this.decorateEmailAddress(d['dests'][i]['address']);
+            address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
             r += "<tr>";
             r += "<td class='item-name'>" + d['dests'][i]['method'] + "</td>";
             r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";

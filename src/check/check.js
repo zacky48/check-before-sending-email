@@ -1,3 +1,4 @@
+import { Utilities } from '../common/Utilities.js';
 import { CheckUtilities } from './CheckUtilities.js';
 let CU;
 let sendLaterDefault = true;
@@ -25,10 +26,11 @@ async function main() {
 
     // 送信元ドメイン
     let domain = CU.extractDomain(target.details.from);
-    document.getElementById('fromDomain').innerHTML = CU.addNumberStyle(domain);
+    document.getElementById('fromDomain').innerHTML = CU.addNumberStyle(Utilities.sanitaize(domain));
     
     // 送信元メールアドレス
-    document.getElementById('fromAddr').innerHTML = CU.decorateEmailAddress(target.details.from);
+    let from = CU.extractEmailAddress(target.details.from);
+    document.getElementById('fromAddr').innerHTML = CU.decorateEmailAddress(Utilities.sanitaize(from));
     
     // 件名
     document.getElementById('subject').textContent = target.details.subject;
@@ -115,7 +117,7 @@ checkLists.addEventListener('click', () => {
         }
                 
         // ボタンを押す前にお伝えしたいメッセージを元に戻す
-        document.getElementById('preExecMesg').innerHTML = browser.i18n.getMessage('preExecMesgCheckAll');
+        document.getElementById('preExecMesg').textContent = browser.i18n.getMessage('preExecMesgCheckAll');
     }
 });
 

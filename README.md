@@ -4,3 +4,5 @@ Before sending an e-mail, a pop-up window clearly displays check items such as t
 
 Please refer to Thunderbird Add-ons page for more information.  
 https://addons.thunderbird.net/thunderbird/addon/check-before-sending-email/
+
+TEST3

@@ -281,12 +281,4 @@ export class CheckUtilities {
         
         return Math.round(num / 1024);
     }
-    
-    // サニタイズ処理
-    sanitaize(str) {
-        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
-    }
-    unsanitaize(str) {
-        return str.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#39;/g, '\'').replace(/&amp;/g, '&');
-    }
 }

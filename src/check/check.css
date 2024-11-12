@@ -115,6 +115,13 @@ span.domain {
     color: #b7b7b7;
 }
 
+/* アドレスリスト名 */
+span.addressListName {
+    font-size: 80%;
+    color: #b7b7b7;
+    font-style: italic;
+}
+
 /* 「本文を別ウィンドウに表示する」リンク用 */
 a#openBodyWindow {
     font-size: 80%;

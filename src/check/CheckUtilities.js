@@ -7,7 +7,6 @@ export class CheckUtilities {
     
     #target;
     #checkItemsNum;
-    #riskScore;
 
     constructor(target) {
         
@@ -15,38 +14,13 @@ export class CheckUtilities {
         this.#target = target;
         
         // チェック項目数
-        this.#checkItemsNum = this.countCheckItems();
-        
-        // リスク値
-        this.#riskScore = this.calculateRiskScore();
+        this.#checkItemsNum = 3; // FROMアドレス、件名、本文で基本3カウント
     }
     
     // チェック項目数のゲッタ
     getCheckItemsNum() {
         return this.#checkItemsNum;
     }    
-
-    // チェック項目を数える（=チェックボックスの数）
-    countCheckItems() {
-        let count = 3;  // FROMアドレス、件名、本文で3カウント
-        count += this.#target.details.to.length;
-        count += this.#target.details.cc.length;
-        count += this.#target.details.bcc.length;
-        count += this.#target.attachments.length;
-    
-        return count;
-    }
-     
-    // リスク値を計算する
-    calculateRiskScore() {
-        let score = 0;
-        score += this.#target.details.to.length;
-        score += this.#target.details.cc.length;
-        score += this.#target.details.bcc.length;
-        score += this.#target.attachments.length * 3;   // 1添付ファイルにつき3スコア
-    
-        return score;
-    }
     
     // チェック済みのチェックボックスの数を数える
     countCheckedBoxes() {
@@ -61,9 +35,9 @@ export class CheckUtilities {
         return checked;
     }
         
-    // リスク値によって表題の色を変える
+    // リスク値（=チェック項目数）によって表題の色を変える
     setRiskScoreColor() {
-        let riskScore   = this.#riskScore;
+        let riskScore   = this.#checkItemsNum;
         let header      = document.getElementById('header');
     
         if (riskScore <= 4) {
@@ -82,8 +56,11 @@ export class CheckUtilities {
         let addr        = this.extractEmailAddress(str);
         let strs        = addr.split('@');
         let username    = this.addNumberStyle(strs[0]);
-        let domain      = '<span class="domain">@' + strs[1] + '</span>';
-    
+        let domain      = '';
+        if (strs[1]) {
+            domain = '<span class="domain">@' + strs[1] + '</span>';
+        }
+
         return username + domain;
     }
     
@@ -105,6 +82,21 @@ export class CheckUtilities {
     extractDomain(emailAddress) {
         let strs = this.extractEmailAddress(emailAddress).split('@');
         return strs[1];
+    }
+
+    // メールアドレスであるか判定し、メールアドレスであれば true そうでなければ false を返す
+    isEmailAddress(str) {
+        let temp1 = this.extractEmailAddress(str);
+        let temp2 = temp1.split('@');
+
+        if (temp2.length === 2
+         && temp2[0].length > 0
+         && temp2[1].length > 0
+        ) {
+            return true;
+        }
+
+        return false;
     }
     
     // 数字にのみスタイルを指定する
@@ -142,15 +134,20 @@ export class CheckUtilities {
                 numFlag = true;  
             }
         }
+
+        // 最後の文字が数値
+        if (numFlag === true) {
+            addr += '</span>';
+        }
     
         return addr;
     }
     
     // 送信先メールアドレスのチェックリスト作成する
-    makeDestEmailAddressesList() {
+    async makeDestEmailAddressesList() {
     
         // 送信先メールアドレスを抽出する
-        let destEmailAddresses = this.extractDestEmailAddresses();
+        let destEmailAddresses = await this.extractDestEmailAddresses();
         
         // リストの背景色
         let colorPool = ['#e5ffcc', '#ffffcc', '#ffe5cc', '#ccccff', '#cce5ff', '#ccffff', '#ccffe5', '#ccffcc'];
@@ -175,7 +172,10 @@ export class CheckUtilities {
         r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
         
         // 送信先ドメイン
-        let domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
+        let domain = '';
+        if (d['domain']) {
+            domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
+        }
         r += "<tr>";
         r += "<td colspan='2' class='item-name'>" + browser.i18n.getMessage('toDomain') + "</td>";
         r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
@@ -188,8 +188,12 @@ export class CheckUtilities {
             r += "<tr>";
             r += "<td class='item-name'>" + d['dests'][i]['method'] + "</td>";
             r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
-            r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span></td>";
-            r += "<tr>"; 
+            r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span>";
+            if (d['dests'][i]['addressListName']) {
+                r += "<span class='addressListName'> [" + d['dests'][i]['addressListName'] + "]</span>";
+            }
+            r += "</td>";
+            r += "<tr>";
         }
         
         r += "</table>";
@@ -199,28 +203,68 @@ export class CheckUtilities {
     }
     
     // 送信先のメールアドレスを抽出する
-    extractDestEmailAddresses() {
+    async extractDestEmailAddresses() {
         let r = [];
-        r = this.extractDestEmailAddressesHelper(this.#target.details.to, r, 'To');
-        r = this.extractDestEmailAddressesHelper(this.#target.details.cc, r, 'Cc');
-        r = this.extractDestEmailAddressesHelper(this.#target.details.bcc, r, 'Bcc');
+        r = await this.extractDestEmailAddressesHelper(this.#target.details.to, r, 'To');
+        r = await this.extractDestEmailAddressesHelper(this.#target.details.cc, r, 'Cc');
+        r = await this.extractDestEmailAddressesHelper(this.#target.details.bcc, r, 'Bcc');
 
         return r;
     }
-    extractDestEmailAddressesHelper(d, r, method) {
+    async extractDestEmailAddressesHelper(d, r, method) {
+
+        /**
+         * アドレスリストをメールアドレスに展開する処理
+         * ＜アドレスリストの仕様＞
+         * アドレスリスト名が正しいメールアドレスかつメールアドレスが登録されていない場合、アドレスリスト名がメールアドレスとして扱われる。（注意すべき仕様）
+         * アドレスリスト名が正しいメールアドレスかつメールアドレスが登録されている場合は、通常のアドレスリストとして扱われる。
+         * アドレスリスト名が正しくないメールアドレスかつメールアドレスが登録されていない場合、エラーとして処理されメールが送信できない。
+         */
+        let destEmailAddresses  = [];
+        let addressListName     = '';
+        let addressList         = '';
+        for (let i = 0; i < d.length; i++) {
+
+            // To、Cc、Bccに入力された文字列でアドレスリストを取得を試みる
+            addressListName = Utilities.extractAddressListName(d[i]);
+            addressList     = await Utilities.getAddressList(addressListName);
+
+            // 該当するアドレスリストが無い（=メールアドレスのはず）
+            if (addressList === null) {
+                if (this.isEmailAddress(d[i])) {
+                    destEmailAddresses.push({
+                        address:            d[i],
+                        addressListName:    ''
+                    });
+                }
+
+            // 該当するアドレスリストがありメールアドレスが登録されている
+            } else {
+                for (let j = 0; j < addressList.length; j++) {
+                    destEmailAddresses.push({
+                        address:            addressList[j],
+                        addressListName:    addressListName
+                    });
+                }
+            }
+        }
+
         let address = '';
         let domain  = '';
-    
-        for (let i = 0; i < d.length; i++) {
-            address = this.extractEmailAddress(d[i]);       
+        for (let i = 0; i < destEmailAddresses.length; i++) {
+            address = this.extractEmailAddress(destEmailAddresses[i]['address']);
             domain  = this.extractDomain(address);
+
+            // チェック項目数のカウント
+            this.#checkItemsNum++;
         
             var exist_flag = false;
             for (let j = 0; j < r.length; j++) {
                 if (domain === r[j]['domain']) {
                     r[j]['dests'].push({
-                        address:    address,
-                        method:     method
+                        address:            address,
+                        method:             method,
+                        addressListName:    destEmailAddresses[i]['addressListName']
                     });
                     exist_flag = true;
                     break;
@@ -231,8 +275,9 @@ export class CheckUtilities {
                 r.push({
                     domain: domain,
                     dests: [{
-                        address:    address,
-                        method:     method
+                        address:            address,
+                        method:             method,
+                        addressListName:    destEmailAddresses[i]['addressListName']
                     }]
                 });
             }
@@ -257,7 +302,10 @@ export class CheckUtilities {
         for (let i = 0; i < a.length; i++) {    
             name = Utilities.sanitaize(a[i]['name']);
             size = this.byteToKbyte(a[i]['size']).toLocaleString();
-            
+
+            // チェック項目数のカウント
+            this.#checkItemsNum++;
+
             r += "<tr>";
             r += "<td class='item-name'>" + browser.i18n.getMessage('attachment') + "</td>";
             r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";

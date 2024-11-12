@@ -14,15 +14,6 @@ async function main() {
 
     // メールの件名をウィンドウ名として表示する
     document.title = browser.i18n.getMessage('subject') + ' : '+ target.details.subject;
-    
-    // チェック項目数の表示
-    document.getElementById('checkCount').textContent = CU.getCheckItemsNum();
-    
-    // チェック済みのチェックボックスの数を表示
-    document.getElementById('checked').textContent = CU.countCheckedBoxes();
-    
-    // リスク値によって表題の色を変える
-    CU.setRiskScoreColor();
 
     // 送信元ドメイン
     let domain = CU.extractDomain(target.details.from);
@@ -39,13 +30,22 @@ async function main() {
     document.getElementById('mailbody').textContent = target.details.plainTextBody;
 
     // 送信先メールアドレスのチェックリスト
-    document.getElementById('destEmailAddresses').innerHTML = CU.makeDestEmailAddressesList();
+    document.getElementById('destEmailAddresses').innerHTML = await CU.makeDestEmailAddressesList();
     
     // 添付ファイルのチェックリスト
     if (target.attachments.length > 0) {
         document.getElementById('attachments').innerHTML = CU.makeAttachmentsList();
     }
 
+    // チェック項目数の表示
+    document.getElementById('checkCount').textContent = CU.getCheckItemsNum();
+    
+    // チェック済みのチェックボックスの数を表示
+    document.getElementById('checked').textContent = CU.countCheckedBoxes();
+
+    // リスク値（=チェック項目数）によって表題の色を変える
+    CU.setRiskScoreColor();
+    
     // ”「後で送信」をデフォルトにする” の設定値
     sendLaterDefault = await getSendLaterDefault();
 

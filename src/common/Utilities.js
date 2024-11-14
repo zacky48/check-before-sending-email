@@ -14,13 +14,13 @@ export class Utilities {
     }
 
     // アドレスリスト名を抽出する
-    // To、Cc、Bccに入力されたアドレスリスト名は以下のようなフォーマットで内部処理される
-    // 例：sample list <サンプルリスト＞　← この場合アドレスリスト名は「sample list」
-    static async extractAddressListName(str) {
-        let str_parsed = await messenger.messengerUtilities.parseMailboxString(str);
+    static extractAddressListName(str) {
+        // To、Cc、Bccに入力されたアドレスリスト名は以下のようなフォーマットで内部処理される
+        // 例：sample list <サンプルリスト＞　← この場合アドレスリスト名は「sample list」
+        let temp = str.split(' <');
 
         // アドレスリスト名に使えない文字列を除去する
-        let addressListName = str_parsed[0]['name'].replace(/[<>;,"]/g, '');
+        let addressListName = temp[0].replace(/[<>;,"]/g, '');
 
         return addressListName;
     }

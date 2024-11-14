@@ -16,12 +16,12 @@ async function main() {
     document.title = browser.i18n.getMessage('subject') + ' : '+ target.details.subject;
 
     // 送信元ドメイン
-    let domain = await CU.extractDomain(target.details.from);
+    let domain = CU.extractDomain(target.details.from);
     document.getElementById('fromDomain').innerHTML = CU.addNumberStyle(Utilities.sanitaize(domain));
     
     // 送信元メールアドレス
-    let from = await CU.extractEmailAddress(target.details.from);
-    document.getElementById('fromAddr').innerHTML = await CU.decorateEmailAddress(Utilities.sanitaize(from));
+    let from = CU.extractEmailAddress(target.details.from);
+    document.getElementById('fromAddr').innerHTML = CU.decorateEmailAddress(Utilities.sanitaize(from));
     
     // 件名
     document.getElementById('subject').textContent = target.details.subject;

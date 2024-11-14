@@ -52,8 +52,8 @@ export class CheckUtilities {
     }
     
     // メールアドレスに表示用のスタイルを設定する
-    async decorateEmailAddress(str) {
-        let addr        = await this.extractEmailAddress(str);
+    decorateEmailAddress(str) {
+        let addr        = this.extractEmailAddress(str);
         let strs        = addr.split('@');
         let username    = this.addNumberStyle(strs[0]);
         let domain      = '';
@@ -66,21 +66,27 @@ export class CheckUtilities {
     
     // メールアドレスのみを抽出する
     // 例：str = 'Sample <sample@example.com>';
-    async extractEmailAddress(str) {
-        let str_parsed = await messenger.messengerUtilities.parseMailboxString(str);
-        return str_parsed[0]['email'];
+    extractEmailAddress(str) {
+        let strs = str.split(' ');
+        let i = strs.length - 1;
+    
+        // メールアドレス前後の<>を取除く
+        let addr = strs[i];
+        addr = addr.replace(/^</, '');
+        addr = addr.replace(/>$/, '');
+    
+        return addr;
     }
     
     // メールアドレスのドメインのみを抽出する
-    async extractDomain(emailAddress) {
-        let strs = await this.extractEmailAddress(emailAddress);
-        let temp = strs.split('@');
-        return temp[1];
+    extractDomain(emailAddress) {
+        let strs = this.extractEmailAddress(emailAddress).split('@');
+        return strs[1];
     }
 
     // メールアドレスであるか判定し、メールアドレスであれば true そうでなければ false を返す
-    async isEmailAddress(str) {
-        let temp1 = await this.extractEmailAddress(str);
+    isEmailAddress(str) {
+        let temp1 = this.extractEmailAddress(str);
         let temp2 = temp1.split('@');
 
         if (temp2.length === 2
@@ -151,14 +157,14 @@ export class CheckUtilities {
         for (let i = 0; i < destEmailAddresses.length; i++) {
             color = colorPool.shift();
             
-            list += await this.makeDestEmailAddressesListHelper(destEmailAddresses[i], color);
+            list += this.makeDestEmailAddressesListHelper(destEmailAddresses[i], color);
             
             colorPool.push(color);
         }
         
         return list;
     }
-    async makeDestEmailAddressesListHelper(d, color) {
+    makeDestEmailAddressesListHelper(d, color) {
         let r = '';
         let style = "style='background-color: " + color + ";'";
 
@@ -178,7 +184,7 @@ export class CheckUtilities {
         // 送信先メールアドレス
         let address = '';
         for (let i = 0; i < d['dests'].length; i++) {
-            address = await this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
+            address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
             r += "<tr>";
             r += "<td class='item-name'>" + d['dests'][i]['method'] + "</td>";
             r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
@@ -220,12 +226,12 @@ export class CheckUtilities {
         for (let i = 0; i < d.length; i++) {
 
             // To、Cc、Bccに入力された文字列でアドレスリストを取得を試みる
-            addressListName = await Utilities.extractAddressListName(d[i]);
+            addressListName = Utilities.extractAddressListName(d[i]);
             addressList     = await Utilities.getAddressList(addressListName);
 
             // 該当するアドレスリストが無い（=メールアドレスのはず）
             if (addressList === null) {
-                if (await this.isEmailAddress(d[i])) {
+                if (this.isEmailAddress(d[i])) {
                     destEmailAddresses.push({
                         address:            d[i],
                         addressListName:    ''
@@ -246,8 +252,8 @@ export class CheckUtilities {
         let address = '';
         let domain  = '';
         for (let i = 0; i < destEmailAddresses.length; i++) {
-            address = await this.extractEmailAddress(destEmailAddresses[i]['address']);
-            domain  = await this.extractDomain(address);
+            address = this.extractEmailAddress(destEmailAddresses[i]['address']);
+            domain  = this.extractDomain(address);
 
             // チェック項目数のカウント
             this.#checkItemsNum++;

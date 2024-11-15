@@ -43,8 +43,8 @@ browser.compose.onBeforeSend.addListener((tab, details) => {
     });
     
     browser.windows.create({
-        height: 768,
-        width:  1080,
+        height: 620,
+        width:  820,
         url:    'check/check.html',
         type:   'popup'
     })

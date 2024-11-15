@@ -1,4 +1,9 @@
+body {
+    background-color: white;
+    color: black;
+}
+
 div#mailbody {
-    font-size: 16px;
+    font-size: 13px;
     padding: 10px;
 }

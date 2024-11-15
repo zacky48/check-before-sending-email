@@ -1,6 +1,6 @@
 body {
-    font-size: 16px;        /* 基本フォントサイズ */
-    margin-bottom: 120px;   /* ページ下部の余白幅 */
+    font-size: 13px;        /* 基本フォントサイズ */
+    margin-bottom: 80px;   /* ページ下部の余白幅 */
     background-color: white;
     color: black;
 }
@@ -12,16 +12,16 @@ div#header {
     top: 0; 
     left: 0;
     width: 100%;
-    height: 80px; /* div#checkLists の margin-top と合わせる */
+    height: 50px; /* div#checkLists の margin-top と合わせる */
     border-bottom: 1px #e0e0e0 solid;
     z-index: 100;
 }
 div#title-banner {
-    font-size: 150%;
+    font-size: 125%;
     font-weight: bold;
     text-align: center;
-    padding: 15px;
-    width: 800px;
+    padding: 8px;
+    width: 820px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -30,7 +30,7 @@ div#title-banner {
 div#counter {
     font-size: 80%;
     text-align: center;
-    width: 800px;
+    width: 820px;
     margin-right: auto;
     margin-left: auto;
 }
@@ -39,12 +39,12 @@ div#counter {
 div.wrapper {
     display: flex;
     flex-direction: column;
-    width: 800px;
+    width: 760px;
     margin-right: auto;
     margin-left: auto;
 }
 div#checkLists {
-    margin-top: 80px; /* div#header の height と合わせる */
+    margin-top: 50px; /* div#header の height と合わせる */
 }
 
 /* コンテンツエリア */
@@ -55,12 +55,13 @@ div.contents {
 /* はじめのメッセージ */
 div.mesg-box {
     font-size: 110%;
-    padding: 20px;
+    text-align: center;
+    padding: 10px;
     border: solid 1px #99ffff;
-    border-radius: 10px;
+    border-radius: 5px;
     background-color: #ccffff;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 /* チェックリストのテーブル */
@@ -73,21 +74,24 @@ table.main td {
     border: solid 1px #808080;
     text-align: center;
     vertical-align: middle;
-    height: 35px;
 }
-table.main td.td01 { width: 16%; border: 0;  height: 0; font-size: 0; }
-table.main td.td02 { width: 6%; border: 0;  height: 0; font-size: 0; }
-table.main td.td03 { width: 78%; border: 0;  height: 0; font-size: 0; }
+table.main td.td01 { width: 15%; border: 0;  height: 0; font-size: 0; }
+table.main td.td02 { width: 5%; border: 0;  height: 0; font-size: 0; }
+table.main td.td03 { width: 80%; border: 0;  height: 0; font-size: 0; }
 table.main td.detail {
     text-align: left;
     padding-left: 10px;
+}
+table.main td#subject {
+    text-align: left;
+    padding: 7px;
 }
 table.main td.item-name {
     background-color: #d4d4d4;
 }
 table.main td.attachments {
     text-align: left;
-    padding-left: 10px;
+    padding: 7px;
     color: red;
     font-weight: bold;
     background-color: #ffccff;
@@ -95,17 +99,17 @@ table.main td.attachments {
 
 /* チェックボックスのスタイル */
 input.checkbox {
-    transform: scale(1.5);
+    transform: scale(1.25);
     margin: 0;
     accent-color: #00ff00;
 }
 
 /* メールアドレスとドメインの表示 */
 span.mailaddr {
-    font-size: 150%;
+    font-size: 125%;
     font-weight: bold;
     font-family: "Helvetica Neue", Arial, Meiryo, sans-serif;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
     word-break: break-all;
 }
 span.numstyle {
@@ -124,14 +128,14 @@ span.addressListName {
 
 /* 「本文を別ウィンドウに表示する」リンク用 */
 a#openBodyWindow {
-    font-size: 80%;
+    font-size: 90%;
 }
 
 /* 本文の表示 */
 textarea#mailbody {
     font-size: 100%;
-    width: 600px;
-    height: 120px;
+    width: 570px;
+    height: 80px;
     resize: none;
     overflow: auto;
     background-color: #f6f6f6;
@@ -158,14 +162,12 @@ hr {
 /* ボタンを押す前にお伝えしたいメッセージ */
 table.mesg {
     width: 100%;
-    margin-top: 25px;
-    margin-bottom: 25px;    
 }
 td#preExecMesg {
     line-height: 1.6;
     text-align: center;
     vertical-align: middle;
-    height: 60px;
+    height: 70px;
 }
 
 /* ボタン配置部分 */
@@ -176,7 +178,7 @@ div#buttons {
 /* 非活性ボタン */
 input.disabledButton {
     width: 200px;
-    height: 50px;
+    height: 40px;
     font-size: 100%;
     background-color: #f6f6f6;
     border: 2px #d4d4d4 solid;
@@ -187,7 +189,7 @@ input.disabledButton {
 /* 後で送信ボタン */
 input.sendLater {
     width: 200px;
-    height: 50px;
+    height: 40px;
     font-size: 100%;
     background-color: blue;
     color: white;
@@ -207,7 +209,7 @@ input.sendLater:active {
 /* 送信ボタン */
 input.send {
     width: 200px;
-    height: 50px;
+    height: 40px;
     font-size: 100%;
     background-color: #ffff00;
     color: red;
@@ -227,7 +229,7 @@ input.send:active {
 /* キャンセルボタン */
 input#cancel {
     width: 200px;
-    height: 50px;
+    height: 40px;
     font-size: 100%;
     background-color: white;
     border: 2px gray solid;

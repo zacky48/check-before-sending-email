@@ -153,8 +153,8 @@ openBodyWindow.addEventListener('click', () => {
     closeBodyWindow();
         
     browser.windows.create({
-        height: 700,
-        width:  900,
+        height: 570,
+        width:  780,
         url:    '../mailbody/mailbody.html',
         type:   'popup'
     })

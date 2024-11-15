@@ -314,7 +314,7 @@ export class CheckUtilities {
         }
         
         r += "</table>";
-        r += "<div class='space30'></div>";
+        r += "<div class='space10'></div>";
 
         return r;
     }

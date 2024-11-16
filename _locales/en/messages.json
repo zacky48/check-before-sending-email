@@ -76,5 +76,17 @@
     },
     "inprocessMesg": {
         "message": "Unable to check this email because other pre-send checks are in progress."
+    },
+    "checkItems": {
+        "message": "Check items."
+    },
+    "checkItemsDescription": {
+        "message": "Before sending an email, please select the items you wish to check. (It is recommended that all items be checked)"
+    },
+    "senderEmailAddress": {
+        "message": "sender's email address"
+    },
+    "destinationEmailAddress": {
+        "message": "destination email address"
     }
 }

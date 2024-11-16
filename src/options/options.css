@@ -3,7 +3,7 @@ body {
     color: black;
 }
 
-label {
+.emphasis {
     font-weight: bold;
 }
 input[type='checkbox'] {
@@ -12,3 +12,6 @@ input[type='checkbox'] {
 dd {
     margin-top: 6px;
 }
+
+/* スペーサー */
+dd.space20 { height: 20px; font-size: 0; }

@@ -1,13 +1,16 @@
 import { Utilities } from '../common/Utilities.js';
 import { CheckUtilities } from './CheckUtilities.js';
 let CU;
-let sendLaterDefault = true;
 const map1 = new Map();
 
 async function main() {
-    
+
     // 送信しようとしているメールデータ
     let target = await browser.runtime.sendMessage('getTarget');
+
+    // 設定値の取得
+    let settingValues = await Utilities.getSettingValues();
+    console.log(settingValues);
 
     // 確認画面用のメソッドたち
     CU = new CheckUtilities(target);
@@ -45,12 +48,9 @@ async function main() {
 
     // リスク値（=チェック項目数）によって表題の色を変える
     CU.setRiskScoreColor();
-    
-    // ”「後で送信」をデフォルトにする” の設定値
-    sendLaterDefault = await getSendLaterDefault();
 
     // 後で送信
-    if (sendLaterDefault) {        
+    if (settingValues['sendLaterDefault']) {        
         // 今すぐ送信ボタンを非表示にする
         document.getElementById('send').disabled        = true;
         document.getElementById('send').style.display   = 'none';
@@ -119,31 +119,6 @@ checkLists.addEventListener('click', () => {
         // ボタンを押す前にお伝えしたいメッセージを元に戻す
         document.getElementById('preExecMesg').textContent = browser.i18n.getMessage('preExecMesgCheckAll');
     }
-});
-
-// 設定（oprions.html）：”「後で送信」をデフォルトにする” の設定値
-// true:後で送信 false:すぐに送信
-const getSendLaterDefault = () => new Promise(resolve => {
-    
-    // 初期値
-    let checked = true;
-    
-    browser.storage.local.get('sendLaterDefault')
-    .then((settings) => {
-        try {
-            checked = settings.sendLaterDefault.checked;
-        } catch {
-            
-            // 設定画面を一度も開いていない場合は未定義となる
-            console.log('settings.sendLaterDefault.checked is undefined.');
-            
-            // なので初期値をセットする
-            let sendLaterDefault = { checked: checked };
-            browser.storage.local.set({sendLaterDefault});
-        }
-        
-        resolve(checked);
-    });
 });
 
 // 本文を別ウィンドウに表示する

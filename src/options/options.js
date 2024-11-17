@@ -1,31 +1,30 @@
-// 設定値の読出し
-function setSendLaterDefault(settings) {
-    let checked;
-    
-    try {
-        checked = settings.sendLaterDefault.checked;
-    } catch(e) {
-        
-        // 未設定の場合は初期値を設定する
-        let sendLaterDefault = {
-            checked: true
-        };
-        browser.storage.local.set({sendLaterDefault});
-        
-        return false;
+import { Utilities } from '../common/Utilities.js';
+
+// 現在の設定値を設定画面に反映させる
+async function loadSettings() {
+
+    // 設定値の取得
+    let settingValues = await Utilities.getSettingValues();
+
+    // 設定画面に反映
+    for (const key in settingValues) {
+        document.getElementById(key).checked = settingValues[key];
     }
-    
-    document.getElementById('sendLaterDefault').checked = checked;
-};
+}
 
 // 設定値の保存
-sendLaterDefault.addEventListener('click', () => {
-    let sendLaterDefault = {
-        checked: document.getElementById('sendLaterDefault').checked
-    };
-    browser.storage.local.set({sendLaterDefault});
+settingArea.addEventListener('click', async () => {
+
+    // 設定値の取得
+    let settingValues = await Utilities.getSettingValues();
+
+    // 設定値の変更を反映する
+    for (const key in settingValues) {
+        settingValues[key] = document.getElementById(key).checked;
+    }
+
+    // 設定値を保存
+    await browser.storage.local.set({settingValues});
 });
 
-document.addEventListener('DOMContentLoaded', () => {
-    browser.storage.local.get('sendLaterDefault').then(setSendLaterDefault);
-});
+document.addEventListener('DOMContentLoaded', loadSettings);

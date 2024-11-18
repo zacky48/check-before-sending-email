@@ -1,44 +1,70 @@
 import { Utilities } from '../common/Utilities.js';
 import { CheckUtilities } from './CheckUtilities.js';
 let CU;
+let settingValues = {};
 const map1 = new Map();
 
 async function main() {
 
+    // 設定値の取得
+    settingValues = await Utilities.getSettingValues();
+
     // 送信しようとしているメールデータ
     let target = await browser.runtime.sendMessage('getTarget');
 
-    // 設定値の取得
-    let settingValues = await Utilities.getSettingValues();
-    console.log(settingValues);
-
     // 確認画面用のメソッドたち
-    CU = new CheckUtilities(target);
+    CU = new CheckUtilities(target, settingValues);
 
     // メールの件名をウィンドウ名として表示する
     document.title = browser.i18n.getMessage('subject') + ' : '+ target.details.subject;
 
-    // 送信元ドメイン
-    let domain = CU.extractDomain(target.details.from);
-    document.getElementById('fromDomain').innerHTML = CU.addNumberStyle(Utilities.sanitaize(domain));
-    
-    // 送信元メールアドレス
-    let from = CU.extractEmailAddress(target.details.from);
-    document.getElementById('fromAddr').innerHTML = CU.decorateEmailAddress(Utilities.sanitaize(from));
-    
-    // 件名
-    document.getElementById('subject').textContent = target.details.subject;
-    
-    // 本文
-    document.getElementById('mailbody').textContent = target.details.plainTextBody;
+    // はじめのメッセージ
+    CU.firstMesg();
 
-    // 送信先メールアドレスのチェックリスト
-    document.getElementById('destEmailAddresses').innerHTML = await CU.makeDestEmailAddressesList();
+    // 送信元メールアドレス
+    if (settingValues['senderEmailAddress']) {
+        document.getElementById('senderEmailAddress').innerHTML = CU.senderEmailAddress();
+    }
+
+    // 件名
+    if (settingValues['subject']) {
+        document.getElementById('subject').innerHTML = CU.subject();
+    }
+
+    // 本文
+    if (settingValues['body']) {
+        document.getElementById('body').innerHTML = CU.body();
+
+        // 本文を別ウィンドウに表示する
+        openBodyWindow.addEventListener('click', () => {
     
-    // 添付ファイルのチェックリスト
-    if (target.attachments.length > 0) {
+            // 既に本文が別ウィンドウで開いていたら閉じる
+            closeBodyWindow();
+                
+            browser.windows.create({
+                height: 570,
+                width:  780,
+                url:    '../mailbody/mailbody.html',
+                type:   'popup'
+            })
+            .then(window => {
+                map1.set('mailbodyWindow', window);
+            }); 
+        });
+    }
+
+    // 送信先メールアドレス
+    if (settingValues['destinationEmailAddress']) {
+        document.getElementById('destEmailAddresses').innerHTML = await CU.makeDestEmailAddressesList();
+    }
+    
+    // 添付ファイル
+    if (settingValues['attachment'] && target.attachments.length > 0) {
         document.getElementById('attachments').innerHTML = CU.makeAttachmentsList();
     }
+
+    // 設定で無効化されている項目
+    CU.disabledCheckItems();
 
     // チェック項目数の表示
     document.getElementById('checkCount').textContent = CU.getCheckItemsNum();
@@ -66,10 +92,14 @@ async function main() {
     document.getElementById('sendLater').value  = browser.i18n.getMessage('sendLater');
     document.getElementById('send').value       = browser.i18n.getMessage('send');
     document.getElementById('cancel').value     = browser.i18n.getMessage('cancel');
+
+    // チェックリストを更新（チェック項目が無い場合のため）
+    updateCheckLists();
 }
 
 // チェックリストのクリックイベントのたびに実行
-checkLists.addEventListener('click', () => {
+checkLists.addEventListener('click', updateCheckLists);
+function updateCheckLists() {
     
     // チェック済みのチェックボックス数
     let checkedBoxes = CU.countCheckedBoxes();
@@ -85,7 +115,7 @@ checkLists.addEventListener('click', () => {
         
         // 後で送信
         let preExecMesg = '';
-        if (sendLaterDefault) {
+        if (settingValues['sendLaterDefault']) {
             document.getElementById('sendLater').disabled   = false;
             document.getElementById('sendLater').className  = 'sendLater';
             preExecMesg = "<p>" + browser.i18n.getMessage('preExecMesgSendLater01') + "</p>"
@@ -106,7 +136,7 @@ checkLists.addEventListener('click', () => {
         CU.setRiskScoreColor();
         
         // 後で送信
-        if (sendLaterDefault) {
+        if (settingValues['sendLaterDefault']) {
             document.getElementById('sendLater').disabled   = true;
             document.getElementById('sendLater').className  = 'disabledButton';
             
@@ -119,24 +149,7 @@ checkLists.addEventListener('click', () => {
         // ボタンを押す前にお伝えしたいメッセージを元に戻す
         document.getElementById('preExecMesg').textContent = browser.i18n.getMessage('preExecMesgCheckAll');
     }
-});
-
-// 本文を別ウィンドウに表示する
-openBodyWindow.addEventListener('click', () => {
-    
-    // 既に本文が別ウィンドウで開いていたら閉じる
-    closeBodyWindow();
-        
-    browser.windows.create({
-        height: 570,
-        width:  780,
-        url:    '../mailbody/mailbody.html',
-        type:   'popup'
-    })
-    .then(window => {
-        map1.set('mailbodyWindow', window);
-    }); 
-});
+}
 
 // 本文ウィンドウを閉じる
 function closeBodyWindow() {

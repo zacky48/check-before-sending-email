@@ -82,7 +82,7 @@ table.main td.detail {
     text-align: left;
     padding-left: 10px;
 }
-table.main td#subject {
+table.main td.subject {
     text-align: left;
     padding: 7px;
 }
@@ -132,7 +132,7 @@ a#openBodyWindow {
 }
 
 /* 本文の表示 */
-textarea#mailbody {
+textarea.mailbody {
     font-size: 100%;
     width: 570px;
     height: 80px;
@@ -147,6 +147,14 @@ span.size {
     color: gray;
     font-weight: normal;
     padding-left: 5px;
+}
+
+/* 設定で無効化されているチェック項目 */
+div#disabledCheckItems {
+    font-size: 80%;
+    color: gray;
+    font-style: italic;
+    line-height: 1.6; 
 }
 
 /* 注意文 */

@@ -38,8 +38,11 @@
     "toDomain": {
         "message": "Destination Domain"
     },
-    "checkSubjectAndBody": {
-        "message": "Please make sure that the subject line and body of the message are correct."
+    "checkSubject": {
+        "message": "Please make sure the subject line is correct."
+    },
+    "checkBody": {
+        "message": "Please make sure the body of the message are correct."
     },
     "openBodyWindow": {
         "message": "Display body of the message in a separate window."
@@ -88,5 +91,20 @@
     },
     "destinationEmailAddress": {
         "message": "destination email address"
-    }
+    },
+    "disabledSenderEmailAddressCheck": {
+        "message": "The check for the sender's email address is disabled in the settings."
+    },
+    "disabledSubjectCheck": {
+        "message": "The subject check is disabled in the settings."
+    },
+    "disabledBodyCheck": {
+        "message": "The check of the body is disabled in the settings."
+    },
+    "disabledDestinationEmailAddressCheck": {
+        "message": "The check for the destination email address is disabled in the settings."
+    },
+    "disabledAttachmentCheck": {
+        "message": "Attachment checking is disabled in the settings."
+    } 
 }

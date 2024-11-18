@@ -267,6 +267,8 @@ export class CheckUtilities {
             colorPool.push(color);
         }
         
+        list += "<div class='space10'></div>";
+
         return list;
     }
     makeDestEmailAddressesListHelper(d, color) {
@@ -462,7 +464,7 @@ export class CheckUtilities {
 
         // 添付ファイル
         if (!this.#settingValues['attachment']) {
-            r += "<p>" + browser.i18n.getMessage('disabledDestinationEmailAddressCheck') + "</p>";
+            r += "<p>" + browser.i18n.getMessage('disabledAttachmentCheck') + "</p>";
         }
 
         if (r) {

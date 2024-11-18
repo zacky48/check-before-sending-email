@@ -106,5 +106,11 @@
     },
     "disabledAttachmentCheck": {
         "message": "添付ファイルのチェックは設定で無効になっています。"
-    }            
+    },
+    "excludeDestinationEmailDomain": {
+        "message": "チェックを除外する送信先メールアドレス・ドメイン"
+    },
+    "excludeDestinationEmailDomainDescription": {
+        "message": "メール送信前のチェックから除外する送信先メールアドレスまたは送信先ドメインを、1行に1つずつ入力してください。送信先ドメインを入力した場合は、そのドメインの全てのメールアドレスがメール送信前のチェックから除外されます。"
+    }
 }

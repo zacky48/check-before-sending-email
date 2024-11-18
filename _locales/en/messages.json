@@ -106,5 +106,11 @@
     },
     "disabledAttachmentCheck": {
         "message": "Attachment checking is disabled in the settings."
-    } 
+    },
+    "excludeDestinationEmailDomain": {
+        "message": "Destination email address/domain to exclude from checking."
+    },
+    "excludeDestinationEmailDomainDescription": {
+        "message": "Enter the destination email addresses or domains, one per line, that you want to exclude from the check before sending email. If you enter a destination domain, all email addresses for that domain will be excluded from the pre-send check."
+    }
 }

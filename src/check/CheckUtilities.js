@@ -20,7 +20,7 @@ export class CheckUtilities {
         // チェック項目数
         this.#checkItemsNum = 0;
     }
-    
+
     // チェック項目数のゲッタ
     getCheckItemsNum() {
         return this.#checkItemsNum;
@@ -250,10 +250,11 @@ export class CheckUtilities {
 
     // 送信先メールアドレスのチェックリスト作成する
     async makeDestEmailAddressesList() {
-    
+
         // 送信先メールアドレスを抽出する
         let destEmailAddresses = await this.extractDestEmailAddresses();
-        
+        console.log(destEmailAddresses);
+
         // リストの背景色
         let colorPool = ['#e5ffcc', '#ffffcc', '#ffe5cc', '#ccccff', '#cce5ff', '#ccffff', '#ccffe5', '#ccffcc'];
         
@@ -372,7 +373,8 @@ export class CheckUtilities {
                     r[j]['dests'].push({
                         address:            address,
                         method:             method,
-                        addressListName:    destEmailAddresses[i]['addressListName']
+                        addressListName:    destEmailAddresses[i]['addressListName'],
+                        checkExclude:       this.#settingValues['allowList'].includes(address)
                     });
                     exist_flag = true;
                     break;
@@ -381,11 +383,13 @@ export class CheckUtilities {
         
             if (!exist_flag) {
                 r.push({
-                    domain: domain,
+                    domain:         domain,
+                    checkExclude:   this.#settingValues['allowList'].includes(domain),
                     dests: [{
                         address:            address,
                         method:             method,
-                        addressListName:    destEmailAddresses[i]['addressListName']
+                        addressListName:    destEmailAddresses[i]['addressListName'],
+                        checkExclude:       this.#settingValues['allowList'].includes(address)
                     }]
                 });
             }

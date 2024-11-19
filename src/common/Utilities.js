@@ -80,7 +80,8 @@ export class Utilities {
             "subject":                  true,
             "body":                     true,
             "destinationEmailAddress":  true,
-            "attachment":               true
+            "attachment":               true,
+            "allowList":                []
         };
 
         // 設定値オブジェクト取得
@@ -119,5 +120,10 @@ export class Utilities {
 
         // 設定値を返して終了
         return settingValues;
+    }
+
+    // 改行コードをLF（\n）に変換する
+    static toLF(str) {
+        return str.replace(/\r\n/g, '\n').replace(/\r/g, '\n');   
     }
 }

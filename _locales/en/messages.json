@@ -112,5 +112,8 @@
     },
     "excludeDestinationEmailDomainDescription": {
         "message": "Enter the destination email addresses or domains, one per line, that you want to exclude from the check before sending email. If you enter a destination domain, all email addresses for that domain will be excluded from the pre-send check."
+    },
+    "disabledEmailDomain": {
+        "message": "Email addresses or domains that are grayed out are excluded from the check in the settings."
     }
 }

@@ -18,9 +18,6 @@ async function main() {
     // メールの件名をウィンドウ名として表示する
     document.title = browser.i18n.getMessage('subject') + ' : '+ target.details.subject;
 
-    // はじめのメッセージ
-    CU.firstMesg();
-
     // 送信元メールアドレス
     if (settingValues['senderEmailAddress']) {
         document.getElementById('senderEmailAddress').innerHTML = CU.senderEmailAddress();
@@ -63,6 +60,8 @@ async function main() {
         document.getElementById('attachments').innerHTML = CU.makeAttachmentsList();
     }
 
+    // （注意）チェック項目数をキーにしているメソッドはここより下で実行する
+
     // 設定で無効化されている項目
     CU.disabledCheckItems();
 
@@ -74,6 +73,9 @@ async function main() {
 
     // リスク値（=チェック項目数）によって表題の色を変える
     CU.setRiskScoreColor();
+
+    // はじめのメッセージ
+    CU.firstMesg();
 
     // 後で送信
     if (settingValues['sendLaterDefault']) {        

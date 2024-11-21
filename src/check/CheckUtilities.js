@@ -8,6 +8,7 @@ export class CheckUtilities {
     #target;
     #settingValues;
     #checkItemsNum;
+    #checkExcludeFlag;
 
     constructor(target, settingValues) {
         
@@ -19,6 +20,9 @@ export class CheckUtilities {
         
         // チェック項目数
         this.#checkItemsNum = 0;
+
+        // チェックを除外する送信先メールアドレスもしくはドメインが１つでもある場合は true とする
+        this.#checkExcludeFlag = false;
     }
 
     // チェック項目数のゲッタ
@@ -151,12 +155,7 @@ export class CheckUtilities {
     firstMesg() {
 
         // チェック項目１つも無い場合は、はじめのメッセージを表示しない
-        if (!this.#settingValues['senderEmailAddress']
-         && !this.#settingValues['subject']
-         && !this.#settingValues['body']
-         && !this.#settingValues['destinationEmailAddress']
-         && (!this.#settingValues['attachment'] || this.#target.attachments.length <= 0)
-        ) {
+        if (this.#checkItemsNum === 0) {
             document.getElementById('firstMesg').innerHTML = "<div class='space20'></div>";
         } else {
             let firstMesg = "<div class='mesg-box'>" + browser.i18n.getMessage('checkTheBox') + "</div>"
@@ -253,7 +252,6 @@ export class CheckUtilities {
 
         // 送信先メールアドレスを抽出する
         let destEmailAddresses = await this.extractDestEmailAddresses();
-        console.log(destEmailAddresses);
 
         // リストの背景色
         let colorPool = ['#e5ffcc', '#ffffcc', '#ffe5cc', '#ccccff', '#cce5ff', '#ccffff', '#ccffe5', '#ccffcc'];
@@ -276,28 +274,59 @@ export class CheckUtilities {
         let r = '';
         let style = "style='background-color: " + color + ";'";
 
-        r += "<p>" + browser.i18n.getMessage('checkToEmailAddress') + "</p>";
+        // チェック除外になっているメールアドレス数をカウント
+        let checkExcludeCount = 0;
+        for (let i = 0; i < d['dests'].length; i++) {
+            if (d['dests'][i]['checkExclude']) {
+                checkExcludeCount++;    
+            }
+        }
+
+        if (d['checkExclude']                       // 送信先ドメインがチェック除外
+         || d['dests'].length === checkExcludeCount // 送信先メールアドレスが全てチェック除外
+        ) {
+            r += ''; // 確認を促すメッセージを表示しない
+        } else {
+            r += "<p>" + browser.i18n.getMessage('checkToEmailAddress') + "</p>";
+        }
+
         r += "<table class='main'>";
         r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
         
         // 送信先ドメイン
-        let domain = '';
-        if (d['domain']) {
-            domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
-        }
         r += "<tr>";
         r += "<td colspan='2' class='item-name'>" + browser.i18n.getMessage('toDomain') + "</td>";
-        r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
+        let domain = '';
+        if (d['domain']) {
+            if (d['checkExclude']) {
+                domain = Utilities.sanitaize(d['domain']);
+                r += "<td class='check-exclude'>" + domain + "</td>";
+            } else {
+                domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
+                r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
+            }
+        } else {
+            r += "<td class='detail' " + style + "><span class='mailaddr'></span></td>";
+        }
         r += "<tr>";
         
         // 送信先メールアドレス
         let address = '';
         for (let i = 0; i < d['dests'].length; i++) {
-            address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
             r += "<tr>";
             r += "<td class='item-name'>" + d['dests'][i]['method'] + "</td>";
-            r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
-            r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span>";
+            
+            if (d['checkExclude'] || d['dests'][i]['checkExclude']) {
+                this.#checkExcludeFlag = true;
+                r += "<td class='check-exclude'></td>";
+                address = Utilities.sanitaize(d['dests'][i]['address']);
+                r += "<td class='check-exclude'>" + address;
+            } else {
+                r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
+                address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
+                r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span>";
+            }
+
             if (d['dests'][i]['addressListName']) {
                 r += "<span class='addressListName'> [" + d['dests'][i]['addressListName'] + "]</span>";
             }
@@ -364,9 +393,13 @@ export class CheckUtilities {
             address = this.extractEmailAddress(destEmailAddresses[i]['address']);
             domain  = this.extractDomain(address);
 
-            // チェック項目数のカウントアップ
-            this.#checkItemsNum++;
-        
+            if (!this.#settingValues['allowList'].includes(domain)
+             && !this.#settingValues['allowList'].includes(address)
+            ) {
+                // チェック項目数のカウントアップ
+                this.#checkItemsNum++;
+            }
+
             var exist_flag = false;
             for (let j = 0; j < r.length; j++) {
                 if (domain === r[j]['domain']) {
@@ -445,6 +478,11 @@ export class CheckUtilities {
     // 設定で無効化されているチェック項目
     disabledCheckItems() {
         let r = '';
+
+        // チェックを除外する送信先メールアドレスもしくはドメインが１つでもある
+        if (this.#checkExcludeFlag) {
+            r += "<p>" + browser.i18n.getMessage('disabledEmailDomain') + "</p>";
+        }
 
         // 送信元のメールアドレス
         if (!this.#settingValues['senderEmailAddress']) {

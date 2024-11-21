@@ -38,8 +38,11 @@
     "toDomain": {
         "message": "送信先ドメイン"
     },
-    "checkSubjectAndBody": {
-        "message": "件名や本文の内容が正しいことを確認してください。"
+    "checkSubject": {
+        "message": "件名が正しいことを確認してください。"
+    },
+    "checkBody": {
+        "message": "本文の内容が正しいことを確認してください。"
     },
     "openBodyWindow": {
         "message": "本文を別ウィンドウに表示する。"
@@ -76,5 +79,41 @@
     },
     "inprocessMesg": {
         "message": "他のメールの送信前チェックが実行中のため、このメールをチェックすることができません。"
+    },
+    "checkItems": {
+        "message": "チェック項目の選択"
+    },
+    "checkItemsDescription": {
+        "message": "メールを送信する前に、チェックしたい項目を選択してください。（全ての項目をチェックすることを推奨します）"
+    },
+    "senderEmailAddress": {
+        "message": "送信元のメールアドレス"
+    },
+    "destinationEmailAddress": {
+        "message": "送信先のメールアドレス"
+    },
+    "disabledSenderEmailAddressCheck": {
+        "message": "送信元のメールアドレスのチェックは設定で無効になっています。"
+    },
+    "disabledSubjectCheck": {
+        "message": "件名のチェックは設定で無効になっています。"
+    },
+    "disabledBodyCheck": {
+        "message": "本文のチェックは設定で無効になっています。"
+    },
+    "disabledDestinationEmailAddressCheck": {
+        "message": "送信先のメールアドレスのチェックは設定で無効になっています。"
+    },
+    "disabledAttachmentCheck": {
+        "message": "添付ファイルのチェックは設定で無効になっています。"
+    },
+    "excludeDestinationEmailDomain": {
+        "message": "チェックを除外する送信先メールアドレス・ドメイン"
+    },
+    "excludeDestinationEmailDomainDescription": {
+        "message": "メール送信前のチェックから除外する送信先メールアドレスまたは送信先ドメインを、1行に1つずつ入力してください。送信先ドメインを入力した場合は、そのドメインの全てのメールアドレスがメール送信前のチェックから除外されます。"
+    },
+    "disabledEmailDomain": {
+        "message": "灰色で表示されているメールアドレスまたはドメインは、設定によりチェックから除外されています。"
     }
 }

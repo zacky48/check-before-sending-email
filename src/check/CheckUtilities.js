@@ -6,17 +6,25 @@ import { Utilities } from '../common/Utilities.js';
 export class CheckUtilities {
     
     #target;
+    #settingValues;
     #checkItemsNum;
+    #checkExcludeFlag;
 
-    constructor(target) {
+    constructor(target, settingValues) {
         
         // 送信しようとしているメールデータ
         this.#target = target;
+
+        // 設定値
+        this.#settingValues = settingValues;
         
         // チェック項目数
-        this.#checkItemsNum = 3; // FROMアドレス、件名、本文で基本3カウント
+        this.#checkItemsNum = 0;
+
+        // チェックを除外する送信先メールアドレスもしくはドメインが１つでもある場合は true とする
+        this.#checkExcludeFlag = false;
     }
-    
+
     // チェック項目数のゲッタ
     getCheckItemsNum() {
         return this.#checkItemsNum;
@@ -143,12 +151,108 @@ export class CheckUtilities {
         return addr;
     }
     
+    // はじめのメッセージ
+    firstMesg() {
+
+        // チェック項目１つも無い場合は、はじめのメッセージを表示しない
+        if (this.#checkItemsNum === 0) {
+            document.getElementById('firstMesg').innerHTML = "<div class='space20'></div>";
+        } else {
+            let firstMesg = "<div class='mesg-box'>" + browser.i18n.getMessage('checkTheBox') + "</div>"
+            document.getElementById('firstMesg').innerHTML = firstMesg;
+        }
+    }
+
+    // 送信元メールアドレスのチェック
+    senderEmailAddress() {
+        let r = '';
+
+        // チェック項目数のカウントアップ
+        this.#checkItemsNum++;
+
+        // 送信元ドメイン
+        let domain = this.extractDomain(this.#target.details.from);
+        let domein_sanitaized = this.addNumberStyle(Utilities.sanitaize(domain));
+
+        // 送信元メールアドレス
+        let from = this.extractEmailAddress(this.#target.details.from);
+        let from_sanitaized = this.decorateEmailAddress(Utilities.sanitaize(from));
+
+        r += "<p>" + browser.i18n.getMessage('checkFromEmailAddress') + "</p>";
+        r += "<table class='main'>";
+        r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
+        r += "<tr>";
+        r += "<td colspan='2' class='item-name'>" + browser.i18n.getMessage('fromDomain') + "</td>";
+        r += "<td class='detail'><span class='mailaddr'>" + domein_sanitaized + "</span></td>";
+        r += "</tr>";
+        r += "<tr>";
+        r += "<td class='item-name'>From</td>";
+        r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
+        r += "<td class='detail'><span class='mailaddr'>" + from_sanitaized + "</span></td>";
+        r += "</tr>";
+        r += "</table>";
+        r += "<div class='space20'></div>";
+
+        return r;
+    }
+
+    // 件名のチェック
+    subject() {
+        let r = '';
+
+        // チェック項目数のカウントアップ
+        this.#checkItemsNum++;
+
+        // 件名
+        let subject_sanitaized = Utilities.sanitaize(this.#target.details.subject)
+
+        r += "<p>" + browser.i18n.getMessage('checkSubject') + "</p>";
+        r += "<table class='main'>";
+        r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
+        r += "<tr>";
+        r += "<td class='item-name'>" + browser.i18n.getMessage('subject') +"</td>";
+        r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
+        r += "<td class='subject'>" + subject_sanitaized + "</td>";
+        r += "</tr>";
+        r += "</table>";
+        r += "<div class='space20'></div>";
+
+        return r;
+    }
+
+    // 本文のチェック
+    body() {
+        let r = '';
+
+        // チェック項目数のカウントアップ
+        this.#checkItemsNum++;
+
+        // 本文
+        let body = this.#target.details.plainTextBody;
+
+        r += "<p>" + browser.i18n.getMessage('checkBody') + "</p>";
+        r += "<table class='main'>";
+        r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
+        r += "<tr>";
+        r += "<td class='item-name'>" + browser.i18n.getMessage('body') +"</td>";
+        r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
+        r += "<td class='detail'>";
+        r += "<textarea class='mailbody' disabled>" + body + "</textarea><br>";
+        r += "<a href='#' id='openBodyWindow'>" + browser.i18n.getMessage('openBodyWindow') + "</a>";
+        r += "</td>";
+        r += "</tr>";
+        r += "</table>";
+        r += "<div class='space20'></div>";
+
+        return r;
+    }
+
     // 送信先メールアドレスのチェックリスト作成する
     async makeDestEmailAddressesList() {
-    
+
         // 送信先メールアドレスを抽出する
         let destEmailAddresses = await this.extractDestEmailAddresses();
-        
+
         // リストの背景色
         let colorPool = ['#e5ffcc', '#ffffcc', '#ffe5cc', '#ccccff', '#cce5ff', '#ccffff', '#ccffe5', '#ccffcc'];
         
@@ -162,33 +266,67 @@ export class CheckUtilities {
             colorPool.push(color);
         }
         
+        list += "<div class='space10'></div>";
+
         return list;
     }
     makeDestEmailAddressesListHelper(d, color) {
         let r = '';
         let style = "style='background-color: " + color + ";'";
 
+        // チェック除外になっているメールアドレス数をカウント
+        let checkExcludeCount = 0;
+        for (let i = 0; i < d['dests'].length; i++) {
+            if (d['dests'][i]['checkExclude']) {
+                checkExcludeCount++;    
+            }
+        }
+
+        if (d['checkExclude']                       // 送信先ドメインがチェック除外
+         || d['dests'].length === checkExcludeCount // 送信先メールアドレスが全てチェック除外
+        ) {
+            r += ''; // 確認を促すメッセージを表示しない
+        } else {
+            r += "<p>" + browser.i18n.getMessage('checkToEmailAddress') + "</p>";
+        }
+
         r += "<table class='main'>";
         r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
         
         // 送信先ドメイン
-        let domain = '';
-        if (d['domain']) {
-            domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
-        }
         r += "<tr>";
         r += "<td colspan='2' class='item-name'>" + browser.i18n.getMessage('toDomain') + "</td>";
-        r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
+        let domain = '';
+        if (d['domain']) {
+            if (d['checkExclude']) {
+                domain = Utilities.sanitaize(d['domain']);
+                r += "<td class='check-exclude'>" + domain + "</td>";
+            } else {
+                domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
+                r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
+            }
+        } else {
+            r += "<td class='detail' " + style + "><span class='mailaddr'></span></td>";
+        }
         r += "<tr>";
         
         // 送信先メールアドレス
         let address = '';
         for (let i = 0; i < d['dests'].length; i++) {
-            address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
             r += "<tr>";
             r += "<td class='item-name'>" + d['dests'][i]['method'] + "</td>";
-            r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
-            r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span>";
+            
+            if (d['checkExclude'] || d['dests'][i]['checkExclude']) {
+                this.#checkExcludeFlag = true;
+                r += "<td class='check-exclude'></td>";
+                address = Utilities.sanitaize(d['dests'][i]['address']);
+                r += "<td class='check-exclude'>" + address;
+            } else {
+                r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
+                address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
+                r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span>";
+            }
+
             if (d['dests'][i]['addressListName']) {
                 r += "<span class='addressListName'> [" + d['dests'][i]['addressListName'] + "]</span>";
             }
@@ -255,16 +393,21 @@ export class CheckUtilities {
             address = this.extractEmailAddress(destEmailAddresses[i]['address']);
             domain  = this.extractDomain(address);
 
-            // チェック項目数のカウント
-            this.#checkItemsNum++;
-        
+            if (!this.#settingValues['allowList'].includes(domain)
+             && !this.#settingValues['allowList'].includes(address)
+            ) {
+                // チェック項目数のカウントアップ
+                this.#checkItemsNum++;
+            }
+
             var exist_flag = false;
             for (let j = 0; j < r.length; j++) {
                 if (domain === r[j]['domain']) {
                     r[j]['dests'].push({
                         address:            address,
                         method:             method,
-                        addressListName:    destEmailAddresses[i]['addressListName']
+                        addressListName:    destEmailAddresses[i]['addressListName'],
+                        checkExclude:       this.#settingValues['allowList'].includes(address)
                     });
                     exist_flag = true;
                     break;
@@ -273,11 +416,13 @@ export class CheckUtilities {
         
             if (!exist_flag) {
                 r.push({
-                    domain: domain,
+                    domain:         domain,
+                    checkExclude:   this.#settingValues['allowList'].includes(domain),
                     dests: [{
                         address:            address,
                         method:             method,
-                        addressListName:    destEmailAddresses[i]['addressListName']
+                        addressListName:    destEmailAddresses[i]['addressListName'],
+                        checkExclude:       this.#settingValues['allowList'].includes(address)
                     }]
                 });
             }
@@ -303,7 +448,7 @@ export class CheckUtilities {
             name = Utilities.sanitaize(a[i]['name']);
             size = this.byteToKbyte(a[i]['size']).toLocaleString();
 
-            // チェック項目数のカウント
+            // チェック項目数のカウントアップ
             this.#checkItemsNum++;
 
             r += "<tr>";
@@ -314,7 +459,7 @@ export class CheckUtilities {
         }
         
         r += "</table>";
-        r += "<div class='space10'></div>";
+        r += "<div class='space20'></div>";
 
         return r;
     }
@@ -328,5 +473,45 @@ export class CheckUtilities {
         }
         
         return Math.round(num / 1024);
+    }
+
+    // 設定で無効化されているチェック項目
+    disabledCheckItems() {
+        let r = '';
+
+        // チェックを除外する送信先メールアドレスもしくはドメインが１つでもある
+        if (this.#checkExcludeFlag) {
+            r += "<p>" + browser.i18n.getMessage('disabledEmailDomain') + "</p>";
+        }
+
+        // 送信元のメールアドレス
+        if (!this.#settingValues['senderEmailAddress']) {
+            r += "<p>" + browser.i18n.getMessage('disabledSenderEmailAddressCheck') + "</p>";
+        }
+
+        // 件名
+        if (!this.#settingValues['subject']) {
+            r += "<p>" + browser.i18n.getMessage('disabledSubjectCheck') + "</p>";
+        }
+
+        // 本文
+        if (!this.#settingValues['body']) {
+            r += "<p>" + browser.i18n.getMessage('disabledBodyCheck') + "</p>";
+        }
+
+        // 送信先のメールアドレス
+        if (!this.#settingValues['destinationEmailAddress']) {
+            r += "<p>" + browser.i18n.getMessage('disabledDestinationEmailAddressCheck') + "</p>";
+        }
+
+        // 添付ファイル
+        if (!this.#settingValues['attachment']) {
+            r += "<p>" + browser.i18n.getMessage('disabledAttachmentCheck') + "</p>";
+        }
+
+        if (r) {
+            r += "<div class='space20'></div>";
+            document.getElementById('disabledCheckItems').innerHTML = r;
+        }
     }
 }

@@ -1,41 +1,69 @@
 import { Utilities } from '../common/Utilities.js';
 import { CheckUtilities } from './CheckUtilities.js';
 let CU;
-let sendLaterDefault = true;
+let settingValues = {};
 const map1 = new Map();
 
 async function main() {
-    
+
+    // 設定値の取得
+    settingValues = await Utilities.getSettingValues();
+
     // 送信しようとしているメールデータ
     let target = await browser.runtime.sendMessage('getTarget');
 
     // 確認画面用のメソッドたち
-    CU = new CheckUtilities(target);
+    CU = new CheckUtilities(target, settingValues);
 
     // メールの件名をウィンドウ名として表示する
     document.title = browser.i18n.getMessage('subject') + ' : '+ target.details.subject;
 
-    // 送信元ドメイン
-    let domain = CU.extractDomain(target.details.from);
-    document.getElementById('fromDomain').innerHTML = CU.addNumberStyle(Utilities.sanitaize(domain));
-    
     // 送信元メールアドレス
-    let from = CU.extractEmailAddress(target.details.from);
-    document.getElementById('fromAddr').innerHTML = CU.decorateEmailAddress(Utilities.sanitaize(from));
-    
-    // 件名
-    document.getElementById('subject').textContent = target.details.subject;
-    
-    // 本文
-    document.getElementById('mailbody').textContent = target.details.plainTextBody;
+    if (settingValues['senderEmailAddress']) {
+        document.getElementById('senderEmailAddress').innerHTML = CU.senderEmailAddress();
+    }
 
-    // 送信先メールアドレスのチェックリスト
-    document.getElementById('destEmailAddresses').innerHTML = await CU.makeDestEmailAddressesList();
+    // 件名
+    if (settingValues['subject']) {
+        document.getElementById('subject').innerHTML = CU.subject();
+    }
+
+    // 本文
+    if (settingValues['body']) {
+        document.getElementById('body').innerHTML = CU.body();
+
+        // 本文を別ウィンドウに表示する
+        openBodyWindow.addEventListener('click', () => {
     
-    // 添付ファイルのチェックリスト
-    if (target.attachments.length > 0) {
+            // 既に本文が別ウィンドウで開いていたら閉じる
+            closeBodyWindow();
+                
+            browser.windows.create({
+                height: 570,
+                width:  780,
+                url:    '../mailbody/mailbody.html',
+                type:   'popup'
+            })
+            .then(window => {
+                map1.set('mailbodyWindow', window);
+            }); 
+        });
+    }
+
+    // 送信先メールアドレス
+    if (settingValues['destinationEmailAddress']) {
+        document.getElementById('destEmailAddresses').innerHTML = await CU.makeDestEmailAddressesList();
+    }
+    
+    // 添付ファイル
+    if (settingValues['attachment'] && target.attachments.length > 0) {
         document.getElementById('attachments').innerHTML = CU.makeAttachmentsList();
     }
+
+    // （注意）チェック項目数をキーにしているメソッドはここより下で実行する
+
+    // 設定で無効化されている項目
+    CU.disabledCheckItems();
 
     // チェック項目数の表示
     document.getElementById('checkCount').textContent = CU.getCheckItemsNum();
@@ -45,12 +73,12 @@ async function main() {
 
     // リスク値（=チェック項目数）によって表題の色を変える
     CU.setRiskScoreColor();
-    
-    // ”「後で送信」をデフォルトにする” の設定値
-    sendLaterDefault = await getSendLaterDefault();
+
+    // はじめのメッセージ
+    CU.firstMesg();
 
     // 後で送信
-    if (sendLaterDefault) {        
+    if (settingValues['sendLaterDefault']) {        
         // 今すぐ送信ボタンを非表示にする
         document.getElementById('send').disabled        = true;
         document.getElementById('send').style.display   = 'none';
@@ -66,10 +94,14 @@ async function main() {
     document.getElementById('sendLater').value  = browser.i18n.getMessage('sendLater');
     document.getElementById('send').value       = browser.i18n.getMessage('send');
     document.getElementById('cancel').value     = browser.i18n.getMessage('cancel');
+
+    // チェックリストを更新（チェック項目が無い場合のため）
+    updateCheckLists();
 }
 
 // チェックリストのクリックイベントのたびに実行
-checkLists.addEventListener('click', () => {
+checkLists.addEventListener('click', updateCheckLists);
+function updateCheckLists() {
     
     // チェック済みのチェックボックス数
     let checkedBoxes = CU.countCheckedBoxes();
@@ -85,7 +117,7 @@ checkLists.addEventListener('click', () => {
         
         // 後で送信
         let preExecMesg = '';
-        if (sendLaterDefault) {
+        if (settingValues['sendLaterDefault']) {
             document.getElementById('sendLater').disabled   = false;
             document.getElementById('sendLater').className  = 'sendLater';
             preExecMesg = "<p>" + browser.i18n.getMessage('preExecMesgSendLater01') + "</p>"
@@ -106,7 +138,7 @@ checkLists.addEventListener('click', () => {
         CU.setRiskScoreColor();
         
         // 後で送信
-        if (sendLaterDefault) {
+        if (settingValues['sendLaterDefault']) {
             document.getElementById('sendLater').disabled   = true;
             document.getElementById('sendLater').className  = 'disabledButton';
             
@@ -119,49 +151,7 @@ checkLists.addEventListener('click', () => {
         // ボタンを押す前にお伝えしたいメッセージを元に戻す
         document.getElementById('preExecMesg').textContent = browser.i18n.getMessage('preExecMesgCheckAll');
     }
-});
-
-// 設定（oprions.html）：”「後で送信」をデフォルトにする” の設定値
-// true:後で送信 false:すぐに送信
-const getSendLaterDefault = () => new Promise(resolve => {
-    
-    // 初期値
-    let checked = true;
-    
-    browser.storage.local.get('sendLaterDefault')
-    .then((settings) => {
-        try {
-            checked = settings.sendLaterDefault.checked;
-        } catch {
-            
-            // 設定画面を一度も開いていない場合は未定義となる
-            console.log('settings.sendLaterDefault.checked is undefined.');
-            
-            // なので初期値をセットする
-            let sendLaterDefault = { checked: checked };
-            browser.storage.local.set({sendLaterDefault});
-        }
-        
-        resolve(checked);
-    });
-});
-
-// 本文を別ウィンドウに表示する
-openBodyWindow.addEventListener('click', () => {
-    
-    // 既に本文が別ウィンドウで開いていたら閉じる
-    closeBodyWindow();
-        
-    browser.windows.create({
-        height: 570,
-        width:  780,
-        url:    '../mailbody/mailbody.html',
-        type:   'popup'
-    })
-    .then(window => {
-        map1.set('mailbodyWindow', window);
-    }); 
-});
+}
 
 // 本文ウィンドウを閉じる
 function closeBodyWindow() {

@@ -82,7 +82,7 @@ table.main td.detail {
     text-align: left;
     padding-left: 10px;
 }
-table.main td#subject {
+table.main td.subject {
     text-align: left;
     padding: 7px;
 }
@@ -108,7 +108,7 @@ input.checkbox {
 span.mailaddr {
     font-size: 125%;
     font-weight: bold;
-    font-family: "Helvetica Neue", Arial, Meiryo, sans-serif;
+    font-family: "Helvetica Neue", Arial, Meiryo, sans-serif; /* table.main td.check-exclude と合わせる */
     letter-spacing: 0.08em;
     word-break: break-all;
 }
@@ -117,6 +117,16 @@ span.numstyle {
 }
 span.domain {
     color: #b7b7b7;
+}
+table.main td.check-exclude {
+    text-align: left;
+    padding-left: 10px;
+    font-size: 125%;
+    font-style: italic;
+    font-family: "Helvetica Neue", Arial, Meiryo, sans-serif; /* span.mailaddr と合わせる */
+    word-break: break-all;
+    color: #b7b7b7;
+    background-color: #f6f6f6;
 }
 
 /* アドレスリスト名 */
@@ -132,7 +142,7 @@ a#openBodyWindow {
 }
 
 /* 本文の表示 */
-textarea#mailbody {
+textarea.mailbody {
     font-size: 100%;
     width: 570px;
     height: 80px;
@@ -147,6 +157,14 @@ span.size {
     color: gray;
     font-weight: normal;
     padding-left: 5px;
+}
+
+/* 設定で無効化されているチェック項目 */
+div#disabledCheckItems {
+    font-size: 80%;
+    color: gray;
+    font-style: italic;
+    line-height: 1.6; 
 }
 
 /* 注意文 */

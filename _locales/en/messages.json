@@ -38,8 +38,11 @@
     "toDomain": {
         "message": "Destination Domain"
     },
-    "checkSubjectAndBody": {
-        "message": "Please make sure that the subject line and body of the message are correct."
+    "checkSubject": {
+        "message": "Please make sure the subject line is correct."
+    },
+    "checkBody": {
+        "message": "Please make sure the body of the message are correct."
     },
     "openBodyWindow": {
         "message": "Display body of the message in a separate window."
@@ -76,5 +79,41 @@
     },
     "inprocessMesg": {
         "message": "Unable to check this email because other pre-send checks are in progress."
+    },
+    "checkItems": {
+        "message": "Select check items."
+    },
+    "checkItemsDescription": {
+        "message": "Before sending an email, please select the items you wish to check. (It is recommended that all items be checked)"
+    },
+    "senderEmailAddress": {
+        "message": "sender's email address"
+    },
+    "destinationEmailAddress": {
+        "message": "destination email address"
+    },
+    "disabledSenderEmailAddressCheck": {
+        "message": "The check for the sender's email address is disabled in the settings."
+    },
+    "disabledSubjectCheck": {
+        "message": "The subject check is disabled in the settings."
+    },
+    "disabledBodyCheck": {
+        "message": "The check of the body is disabled in the settings."
+    },
+    "disabledDestinationEmailAddressCheck": {
+        "message": "The check for the destination email address is disabled in the settings."
+    },
+    "disabledAttachmentCheck": {
+        "message": "Attachment checking is disabled in the settings."
+    },
+    "excludeDestinationEmailDomain": {
+        "message": "Destination email address/domain to exclude from checking."
+    },
+    "excludeDestinationEmailDomainDescription": {
+        "message": "Enter the destination email addresses or domains, one per line, that you want to exclude from the check before sending email. If you enter a destination domain, all email addresses for that domain will be excluded from the pre-send check."
+    },
+    "disabledEmailDomain": {
+        "message": "Email addresses or domains that are grayed out are excluded from the check in the settings."
     }
 }

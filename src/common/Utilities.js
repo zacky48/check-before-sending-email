@@ -69,4 +69,61 @@ export class Utilities {
         // 該当するアドレスリストなし
         return null;
     }
+
+    // 設定値の取得
+    static async getSettingValues() {
+
+        // デフォルト値
+        let defaultValues = {
+            "sendLaterDefault":         true,
+            "senderEmailAddress":       true,
+            "subject":                  true,
+            "body":                     true,
+            "destinationEmailAddress":  true,
+            "attachment":               true,
+            "allowList":                []
+        };
+
+        // 設定値オブジェクト取得
+        let obj = await browser.storage.local.get('settingValues');
+
+        // 旧設定値オブジェクトの取得
+        let old_obj = await browser.storage.local.get('sendLaterDefault');
+
+        // 設定値オブジェクトの設定
+        let settingValues = {};
+        if (obj['settingValues']) {
+            settingValues = obj['settingValues'];
+        } else {
+            settingValues = defaultValues;
+        }
+
+        // 旧設定値オブジェクトがある場合
+        if (old_obj['sendLaterDefault']) {
+
+            // 旧設定値オブジェクトの値のみ上書きする
+            settingValues['sendLaterDefault'] = old_obj['sendLaterDefault']['checked'];
+
+            // 旧設定値オブジェクトは削除する
+            await browser.storage.local.remove('sendLaterDefault');
+        }  
+
+        // 設定が新たに追加された場合の処理（設定が削除された場合はそのままで問題ない）
+        for (const key in defaultValues) {
+            if (settingValues[key] === undefined) {
+                settingValues[key] = defaultValues[key];
+            }
+        }
+
+        // 設定値を保存
+        await browser.storage.local.set({settingValues});
+
+        // 設定値を返して終了
+        return settingValues;
+    }
+
+    // 改行コードをLF（\n）に変換する
+    static toLF(str) {
+        return str.replace(/\r\n/g, '\n').replace(/\r/g, '\n');   
+    }
 }

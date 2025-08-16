@@ -20,7 +20,7 @@
                 <label data-i18n='sendLaterDefault' class='emphasis'><input type='checkbox' id='sendLaterDefault'></label>
             </dt>
             <dd data-i18n='sendLaterDefaultDescription'></dd>
-            <dd class='space20'></dd>
+            <dd class='space10'></dd>
 
             <!-- チェック項目の選択 -->
             <dt data-i18n='checkItems' class='emphasis'></dt>
@@ -40,13 +40,21 @@
             <dd>
                 <label data-i18n='attachment'><input type='checkbox' id='attachment'></label>
             </dd>
-            <dd class='space20'></dd>
+            <dd class='space10'></dd>
 
+            <!-- チェックを除外する送信元メールアドレス・ドメイン -->
+            <dt data-i18n='excludeSenderEmailDomain' class='emphasis'></dt>
+            <dd data-i18n='excludeSenderEmailDomainDescription'></dd>
+            <dd>
+                <textarea id='senderAllowList'></textarea>
+            </dd>
+            <dd class='space10'></dd>
+            
             <!-- チェックを除外する送信先メールアドレス・ドメイン -->
             <dt data-i18n='excludeDestinationEmailDomain' class='emphasis'></dt>
             <dd data-i18n='excludeDestinationEmailDomainDescription'></dd>
             <dd>
-                <textarea id='allowList'></textarea>
+                <textarea id='destinationAllowList'></textarea>
             </dd>
         </dl>
 

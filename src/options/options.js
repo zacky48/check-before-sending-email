@@ -25,8 +25,11 @@ async function loadSettings() {
     // 添付ファイル
     document.getElementById('attachment').checked = settingValues['attachment'];
 
+    // チェックを除外する送信元メールアドレス・ドメインリスト
+    document.getElementById('senderAllowList').value = settingValues['senderAllowList'].join('\n');
+
     // チェックを除外する送信先メールアドレス・ドメインリスト
-    document.getElementById('allowList').value = settingValues['allowList'].join('\n');
+    document.getElementById('destinationAllowList').value = settingValues['destinationAllowList'].join('\n');
 }
 
 // 設定値の保存（チェックボックスのみ）
@@ -57,15 +60,20 @@ settingArea.addEventListener('click', async () => {
     await browser.storage.local.set({settingValues});
 });
 
+// チェックを除外する送信元メールアドレス・ドメインリストの保存
+senderAllowList.addEventListener('input', e => saveAllowList('senderAllowList'));
+
 // チェックを除外する送信先メールアドレス・ドメインリストの保存
-allowList.addEventListener('input', saveAllowList);
-async function saveAllowList() {
+destinationAllowList.addEventListener('input', e => saveAllowList('destinationAllowList'));
+
+// メールアドレス・ドメインリストを配列にして保存する関数
+async function saveAllowList(key) {
 
     // 設定値の取得
     let settingValues = await Utilities.getSettingValues();    
 
     // 入力されたリストを行ごとに配列にする
-    let allowList_text      = document.getElementById('allowList').value;
+    let allowList_text      = document.getElementById(key).value;
     let allowList_text_LF   = Utilities.toLF(allowList_text);
     let allowList           = allowList_text_LF.split('\n');
 
@@ -80,6 +88,6 @@ async function saveAllowList() {
     }
 
     // リストを保存
-    settingValues['allowList'] = allowList_clean;
+    settingValues[key] = allowList_clean;
     await browser.storage.local.set({settingValues});
 }

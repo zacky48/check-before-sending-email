@@ -81,7 +81,8 @@ export class Utilities {
             "body":                     true,
             "destinationEmailAddress":  true,
             "attachment":               true,
-            "allowList":                []
+            "senderAllowList":          [],
+            "destinationAllowList":     []  // v0.3.0までキー名は「allowList」だった
         };
 
         // 設定値オブジェクト取得
@@ -96,6 +97,11 @@ export class Utilities {
             settingValues = obj['settingValues'];
         } else {
             settingValues = defaultValues;
+        }
+
+        // キー名の変更対応（v0.3.1で「allowList」から「destinationAllowList」に変更）
+        if (settingValues['allowList'] && !settingValues['destinationAllowList']) {
+                settingValues['destinationAllowList'] = settingValues['allowList'];
         }
 
         // 旧設定値オブジェクトがある場合

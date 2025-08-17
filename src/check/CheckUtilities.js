@@ -167,28 +167,62 @@ export class CheckUtilities {
     senderEmailAddress() {
         let r = '';
 
-        // チェック項目数のカウントアップ
-        this.#checkItemsNum++;
-
         // 送信元ドメイン
         let domain = this.extractDomain(this.#target.details.from);
         let domein_sanitaized = this.addNumberStyle(Utilities.sanitaize(domain));
+
+        // 送信元ドメインのチェック除外設定
+        let exclude_domain = false;
+        if (this.#settingValues['senderAllowList'].includes(domain)) {
+            exclude_domain = true;  // チェック除外
+            this.#checkExcludeFlag = true;
+        }
 
         // 送信元メールアドレス
         let from = this.extractEmailAddress(this.#target.details.from);
         let from_sanitaized = this.decorateEmailAddress(Utilities.sanitaize(from));
 
-        r += "<p>" + browser.i18n.getMessage('checkFromEmailAddress') + "</p>";
+        // 送信元メールアドレスのチェック除外設定
+        let exclude_from = false;  // チェック除外
+        if (this.#settingValues['senderAllowList'].includes(from)) {
+            exclude_from = true;
+            this.#checkExcludeFlag = true;
+        }
+
+        // チェック除外ではない場合
+        if (!exclude_domain && !exclude_from) {
+
+            // チェック項目数のカウントアップ
+            this.#checkItemsNum++;
+
+            // 確認を促すメッセージの表示
+            r += "<p>" + browser.i18n.getMessage('checkFromEmailAddress') + "</p>";
+        }
+ 
+        // メインテーブル
         r += "<table class='main'>";
         r += "<tr><td class='td01'></td><td class='td02'></td><td class='td03'></td></tr>";
+
+        // 送信元ドメイン
         r += "<tr>";
         r += "<td colspan='2' class='item-name'>" + browser.i18n.getMessage('fromDomain') + "</td>";
-        r += "<td class='detail'><span class='mailaddr'>" + domein_sanitaized + "</span></td>";
+        if (exclude_domain) {
+            r += "<td class='check-exclude'>" + domein_sanitaized + "</td>";
+        } else {
+            r += "<td class='detail'><span class='mailaddr'>" + domein_sanitaized + "</span></td>";
+        }
         r += "</tr>";
+
+        // 送信元メールアドレス
         r += "<tr>";
         r += "<td class='item-name'>From</td>";
-        r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
-        r += "<td class='detail'><span class='mailaddr'>" + from_sanitaized + "</span></td>";
+        if (exclude_domain || exclude_from) {
+            r += "<td class='check-exclude'></td>";
+            r += "<td class='check-exclude'>" + from_sanitaized + "</td>";
+        } else {
+            r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
+            r += "<td class='detail'><span class='mailaddr'>" + from_sanitaized + "</span></td>";
+        }
         r += "</tr>";
         r += "</table>";
         r += "<div class='space20'></div>";
@@ -393,8 +427,8 @@ export class CheckUtilities {
             address = this.extractEmailAddress(destEmailAddresses[i]['address']);
             domain  = this.extractDomain(address);
 
-            if (!this.#settingValues['allowList'].includes(domain)
-             && !this.#settingValues['allowList'].includes(address)
+            if (!this.#settingValues['destinationAllowList'].includes(domain)
+             && !this.#settingValues['destinationAllowList'].includes(address)
             ) {
                 // チェック項目数のカウントアップ
                 this.#checkItemsNum++;
@@ -407,7 +441,7 @@ export class CheckUtilities {
                         address:            address,
                         method:             method,
                         addressListName:    destEmailAddresses[i]['addressListName'],
-                        checkExclude:       this.#settingValues['allowList'].includes(address)
+                        checkExclude:       this.#settingValues['destinationAllowList'].includes(address)
                     });
                     exist_flag = true;
                     break;
@@ -417,12 +451,12 @@ export class CheckUtilities {
             if (!exist_flag) {
                 r.push({
                     domain:         domain,
-                    checkExclude:   this.#settingValues['allowList'].includes(domain),
+                    checkExclude:   this.#settingValues['destinationAllowList'].includes(domain),
                     dests: [{
                         address:            address,
                         method:             method,
                         addressListName:    destEmailAddresses[i]['addressListName'],
-                        checkExclude:       this.#settingValues['allowList'].includes(address)
+                        checkExclude:       this.#settingValues['destinationAllowList'].includes(address)
                     }]
                 });
             }
@@ -479,7 +513,7 @@ export class CheckUtilities {
     disabledCheckItems() {
         let r = '';
 
-        // チェックを除外する送信先メールアドレスもしくはドメインが１つでもある
+        // チェックを除外するメールアドレスもしくはドメインが１つでもある
         if (this.#checkExcludeFlag) {
             r += "<p>" + browser.i18n.getMessage('disabledEmailDomain') + "</p>";
         }

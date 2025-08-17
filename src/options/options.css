@@ -13,8 +13,16 @@ dd {
     margin-top: 6px;
 }
 
+/* チェックを除外する送信元メールアドレス・ドメイン */
+textarea#senderAllowList {
+    font-size: 100%;
+    width: 400px;
+    height: 50px;
+    background-color: #ffffef;
+}
+
 /* チェックを除外する送信先メールアドレス・ドメイン */
-textarea#allowList {
+textarea#destinationAllowList {
     font-size: 100%;
     width: 400px;
     height: 80px;
@@ -22,4 +30,5 @@ textarea#allowList {
 }
 
 /* スペーサー */
+dd.space10 { height: 20px; font-size: 0; }
 dd.space20 { height: 20px; font-size: 0; }

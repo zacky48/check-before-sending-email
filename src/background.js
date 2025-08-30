@@ -1,5 +1,6 @@
 let target = { tab: null };
 const map1 = new Map();
+import { Utilities } from './common/Utilities.js';
 
 // targetオブジェクトの初期化
 function clearTarget () {
@@ -15,7 +16,25 @@ browser.compose.onBeforeSend.addListener((tab, details) => {
         clearTarget();
         return { cancel: false };
     }
+
+    // 追加：issue4_2（ここから）
+    // TODO チェック項目数の取得
+    let CheckItemsNum = 0;  // ダミー
     
+    // 設定値の取得
+    Utilities.getSettingValues()
+    .then((settingValues) => {
+        console.log(settingValues);
+    });
+
+    // チェック項目がなければ送信前の確認画面を表示せずに処理する（「後で送信」か「そのまま送信」かは設定によって分岐する）
+    /*
+    if (CheckItemsNum == 0) {
+        return { cancel: false };
+    }
+    */
+    // 追加：issue4_2（ここまで）
+
     // 同時処理の禁止
     if (target.tab !== null) {
         

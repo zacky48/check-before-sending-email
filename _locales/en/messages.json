@@ -121,5 +121,11 @@
     },
     "disabledEmailDomain": {
         "message": "Gray email addresses or domains are excluded by settings."
-    }
+    },
+    "disableConfirmationScreen": {
+        "message": "Do not display the confirmation screen if there are no check items."
+    },
+    "disableConfirmationScreenDescription": {
+        "message": "If you do not want the confirmation screen to appear when there are no check items, check this setting."
+    }    
 }

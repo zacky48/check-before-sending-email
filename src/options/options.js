@@ -30,6 +30,9 @@ async function loadSettings() {
 
     // チェックを除外する送信先メールアドレス・ドメインリスト
     document.getElementById('destinationAllowList').value = settingValues['destinationAllowList'].join('\n');
+
+    // チェック項目がない場合は、確認画面を表示させない。
+    document.getElementById('disableConfirmationScreen').checked = settingValues['disableConfirmationScreen'];
 }
 
 // 設定値の保存（チェックボックスのみ）
@@ -56,6 +59,9 @@ settingArea.addEventListener('click', async () => {
     // 添付ファイル
     settingValues['attachment'] = document.getElementById('attachment').checked;
  
+    // 「後で送信」をデフォルトにする
+    settingValues['disableConfirmationScreen'] = document.getElementById('disableConfirmationScreen').checked;
+
     // 設定値を保存
     await browser.storage.local.set({settingValues});
 });

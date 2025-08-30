@@ -59,7 +59,7 @@ settingArea.addEventListener('click', async () => {
     // 添付ファイル
     settingValues['attachment'] = document.getElementById('attachment').checked;
  
-    // 「後で送信」をデフォルトにする
+    // チェック項目がない場合は、確認画面を表示させない。
     settingValues['disableConfirmationScreen'] = document.getElementById('disableConfirmationScreen').checked;
 
     // 設定値を保存

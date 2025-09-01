@@ -3,13 +3,13 @@ const map1 = new Map();
 import { Utilities } from './common/Utilities.js';
 
 // targetオブジェクトの初期化
-function clearTarget () {
+function clearTarget() {
     target = {};
     target = { tab: null };
 };
 
 // 送信ボタンを押した時に実行される
-browser.compose.onBeforeSend.addListener((tab, details) => {
+browser.compose.onBeforeSend.addListener(async (tab, details) => {
 
     // 「後で送信」をクリックした時の処理
     if (target.mode === 'sendLater') {
@@ -17,63 +17,60 @@ browser.compose.onBeforeSend.addListener((tab, details) => {
         return { cancel: false };
     }
 
-    // 追加：issue4_2（ここから）
     // TODO チェック項目数の取得
     let CheckItemsNum = 0;  // ダミー
     
     // 設定値の取得
-    Utilities.getSettingValues()
-    .then((settingValues) => {
-        console.log(settingValues);
-    });
+    let settingValues = await Utilities.getSettingValues();
 
-    // チェック項目がなければ送信前の確認画面を表示せずに処理する（「後で送信」か「そのまま送信」かは設定によって分岐する）
-    /*
-    if (CheckItemsNum == 0) {
-        return { cancel: false };
-    }
-    */
-    // 追加：issue4_2（ここまで）
+    // チェック項目が1つ以上ある または 確認画面を表示させない設定がOFFの場合
+    if (CheckItemsNum > 0 || !settingValues['disableConfirmationScreen']) {
 
-    // 同時処理の禁止
-    if (target.tab !== null) {
+        // 同時処理の禁止
+        if (target.tab !== null) {
         
-        if (map1.get('inprocessWindow')) {
-            const inprocessWindow = map1.get('inprocessWindow');
-            browser.windows.remove(inprocessWindow.id);
-        }
+            if (map1.get('inprocessWindow')) {
+                const inprocessWindow = map1.get('inprocessWindow');
+                browser.windows.remove(inprocessWindow.id);
+            }
 
-        browser.windows.create({
-            height: 300,
-            width:  600,
-            url:    'inprocess/inprocess.html',
-            type:   'popup'
-        })
-        .then(inprocessWindow => {
+            let inprocessWindow = await browser.windows.create({
+                height: 300,
+                width:  600,
+                url:    'inprocess/inprocess.html',
+                type:   'popup'
+            });
             map1.set('inprocessWindow', inprocessWindow);
-        });
-        return { cancel: true };
-    }
+
+            return { cancel: true };
+        }
     
-    // 確認画面で使うデータをtargetオブジェクトにまとめる
-    messenger.compose.listAttachments(tab.id)
-    .then((attachments) => {
+        // 確認画面で使うデータをtargetオブジェクトにまとめる
+        let attachments = await messenger.compose.listAttachments(tab.id);
         target = { tab: tab, details: details, attachments: attachments };
-    });
+
+        // 確認画面を表示
+        target.window = await browser.windows.create({
+            height: 620,
+            width:  820,
+            url:    'check/check.html',
+            type:   'popup'
+        });
     
-    browser.windows.create({
-        height: 620,
-        width:  820,
-        url:    'check/check.html',
-        type:   'popup'
-    })
-    .then(window => {
-        target.window = window; 
-    });
+        return new Promise(resolve => {
+            map1.set(tab.id, resolve);
+        });
     
-    return new Promise(resolve => {
-        map1.set(tab.id, resolve);
-    });
+    // TODO 9/3 つづきここから    
+    // 確認画面を表示しない場合
+    } else {
+
+        // 後で送信（送信トレイに入れる）        
+        if (settingValues['sendLaterDefault']) {
+            console.log('sendLaterDefault');
+            return { cancel: false };
+        }
+    }
 });
 
 // 確認画面とのデータ交換

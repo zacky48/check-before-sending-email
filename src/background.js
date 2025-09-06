@@ -1,12 +1,26 @@
 let target = { tab: null };
 const map1 = new Map();
 import { Utilities } from './common/Utilities.js';
+import { CheckUtilities } from './check/CheckUtilities.js';
 
 // targetオブジェクトの初期化
 function clearTarget() {
     target = {};
     target = { tab: null };
 };
+
+// チェック項目数の取得
+async function getCheckItemsNum(target, settingValues) {
+    
+    // 確認画面用のメソッドたち
+    let CU = new CheckUtilities(target, settingValues);
+
+    // TODO check.js を参考に各種メソッドを実行
+
+
+
+    return 0;   // ダミー
+}
 
 // 送信ボタンを押した時に実行される
 browser.compose.onBeforeSend.addListener(async (tab, details) => {
@@ -17,37 +31,37 @@ browser.compose.onBeforeSend.addListener(async (tab, details) => {
         return { cancel: false };
     }
 
-    // TODO チェック項目数の取得
-    let CheckItemsNum = 0;  // ダミー
-    
+    // 同時処理の禁止
+    if (target.tab !== null) {
+        
+        if (map1.get('inprocessWindow')) {
+            const inprocessWindow = map1.get('inprocessWindow');
+            browser.windows.remove(inprocessWindow.id);
+        }
+
+        let inprocessWindow = await browser.windows.create({
+            height: 300,
+            width:  600,
+            url:    'inprocess/inprocess.html',
+            type:   'popup'
+        });
+        map1.set('inprocessWindow', inprocessWindow);
+
+        return { cancel: true };
+    }
+
+    // 確認に使うデータをtargetオブジェクトにまとめる
+    let attachments = await messenger.compose.listAttachments(tab.id);
+    target = { tab: tab, details: details, attachments: attachments };
+
     // 設定値の取得
     let settingValues = await Utilities.getSettingValues();
 
+    // チェック項目数の取得
+    let CheckItemsNum = getCheckItemsNum(target, settingValues);
+    
     // チェック項目が1つ以上ある または 確認画面を表示させない設定がOFFの場合
     if (CheckItemsNum > 0 || !settingValues['disableConfirmationScreen']) {
-
-        // 同時処理の禁止
-        if (target.tab !== null) {
-        
-            if (map1.get('inprocessWindow')) {
-                const inprocessWindow = map1.get('inprocessWindow');
-                browser.windows.remove(inprocessWindow.id);
-            }
-
-            let inprocessWindow = await browser.windows.create({
-                height: 300,
-                width:  600,
-                url:    'inprocess/inprocess.html',
-                type:   'popup'
-            });
-            map1.set('inprocessWindow', inprocessWindow);
-
-            return { cancel: true };
-        }
-    
-        // 確認画面で使うデータをtargetオブジェクトにまとめる
-        let attachments = await messenger.compose.listAttachments(tab.id);
-        target = { tab: tab, details: details, attachments: attachments };
 
         // 確認画面を表示
         target.window = await browser.windows.create({

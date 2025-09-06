@@ -61,14 +61,19 @@ browser.compose.onBeforeSend.addListener(async (tab, details) => {
             map1.set(tab.id, resolve);
         });
     
-    // TODO 9/3 つづきここから    
     // 確認画面を表示しない場合
     } else {
 
         // 後で送信（送信トレイに入れる）        
         if (settingValues['sendLaterDefault']) {
-            console.log('sendLaterDefault');
-            return { cancel: false };
+            
+            target.mode = 'sendLater';
+            return new Promise(async resolve => {
+                resolve({ cancel: true });
+                setTimeout(() => {
+                    messenger.compose.sendMessage(tab.id, { mode: 'sendLater' });
+                });
+            });
         }
     }
 });

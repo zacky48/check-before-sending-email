@@ -68,7 +68,7 @@ browser.compose.onBeforeSend.addListener(async (tab, details) => {
         if (settingValues['sendLaterDefault']) {
             
             target.mode = 'sendLater';
-            return new Promise(async resolve => {
+            return new Promise(resolve => {
                 resolve({ cancel: true });
                 setTimeout(() => {
                     messenger.compose.sendMessage(tab.id, { mode: 'sendLater' });

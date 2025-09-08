@@ -12,14 +12,38 @@ function clearTarget() {
 // チェック項目数の取得
 async function getCheckItemsNum(target, settingValues) {
     
-    // 確認画面用のメソッドたち
+    // 確認画面用のメソッド
     let CU = new CheckUtilities(target, settingValues);
 
-    // TODO check.js を参考に各種メソッドを実行
+    // 送信元メールアドレス
+    if (settingValues['senderEmailAddress']) {
+        CU.senderEmailAddress();
+    }
 
+    // 件名
+    if (settingValues['subject']) {
+        CU.subject();
+    }
 
+    // 本文
+    if (settingValues['body']) {
+        CU.body();
+    }
 
-    return 0;   // ダミー
+    // 送信先メールアドレス
+    if (settingValues['destinationEmailAddress']) {
+        await CU.makeDestEmailAddressesList();
+    }
+    
+    // 添付ファイル
+    if (settingValues['attachment'] && target.attachments.length > 0) {
+        CU.makeAttachmentsList();
+    }
+
+    // （注意）チェック項目数をキーにしているメソッドはここより下で実行する
+    let checkItemsNum = CU.getCheckItemsNum();
+
+    return checkItemsNum;
 }
 
 // 送信ボタンを押した時に実行される
@@ -58,10 +82,13 @@ browser.compose.onBeforeSend.addListener(async (tab, details) => {
     let settingValues = await Utilities.getSettingValues();
 
     // チェック項目数の取得
-    let CheckItemsNum = getCheckItemsNum(target, settingValues);
+    let checkItemsNum = await getCheckItemsNum(target, settingValues);
+
+    // TODO デバッグ用 要削除
+    console.log(checkItemsNum);
     
     // チェック項目が1つ以上ある または 確認画面を表示させない設定がOFFの場合
-    if (CheckItemsNum > 0 || !settingValues['disableConfirmationScreen']) {
+    if (checkItemsNum > 0 || !settingValues['disableConfirmationScreen']) {
 
         // 確認画面を表示
         target.window = await browser.windows.create({

@@ -83,9 +83,6 @@ browser.compose.onBeforeSend.addListener(async (tab, details) => {
 
     // チェック項目数の取得
     let checkItemsNum = await getCheckItemsNum(target, settingValues);
-
-    // TODO デバッグ用 要削除
-    console.log(checkItemsNum);
     
     // チェック項目が1つ以上ある または 確認画面を表示させない設定がOFFの場合
     if (checkItemsNum > 0 || !settingValues['disableConfirmationScreen']) {

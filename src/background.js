@@ -1,21 +1,60 @@
 let target = { tab: null };
 const map1 = new Map();
+import { Utilities } from './common/Utilities.js';
+import { CheckUtilities } from './check/CheckUtilities.js';
 
 // targetオブジェクトの初期化
-function clearTarget () {
+function clearTarget() {
     target = {};
     target = { tab: null };
 };
 
+// チェック項目数の取得
+async function getCheckItemsNum(target, settingValues) {
+    
+    // 確認画面用のメソッド
+    let CU = new CheckUtilities(target, settingValues);
+
+    // 送信元メールアドレス
+    if (settingValues['senderEmailAddress']) {
+        CU.senderEmailAddress();
+    }
+
+    // 件名
+    if (settingValues['subject']) {
+        CU.subject();
+    }
+
+    // 本文
+    if (settingValues['body']) {
+        CU.body();
+    }
+
+    // 送信先メールアドレス
+    if (settingValues['destinationEmailAddress']) {
+        await CU.makeDestEmailAddressesList();
+    }
+    
+    // 添付ファイル
+    if (settingValues['attachment'] && target.attachments.length > 0) {
+        CU.makeAttachmentsList();
+    }
+
+    // （注意）チェック項目数をキーにしているメソッドはここより下で実行する
+    let checkItemsNum = CU.getCheckItemsNum();
+
+    return checkItemsNum;
+}
+
 // 送信ボタンを押した時に実行される
-browser.compose.onBeforeSend.addListener((tab, details) => {
+browser.compose.onBeforeSend.addListener(async (tab, details) => {
 
     // 「後で送信」をクリックした時の処理
     if (target.mode === 'sendLater') {
         clearTarget();
         return { cancel: false };
     }
-    
+
     // 同時処理の禁止
     if (target.tab !== null) {
         
@@ -24,37 +63,57 @@ browser.compose.onBeforeSend.addListener((tab, details) => {
             browser.windows.remove(inprocessWindow.id);
         }
 
-        browser.windows.create({
+        let inprocessWindow = await browser.windows.create({
             height: 300,
             width:  600,
             url:    'inprocess/inprocess.html',
             type:   'popup'
-        })
-        .then(inprocessWindow => {
-            map1.set('inprocessWindow', inprocessWindow);
         });
+        map1.set('inprocessWindow', inprocessWindow);
+
         return { cancel: true };
     }
+
+    // 確認に使うデータをtargetオブジェクトにまとめる
+    let attachments = await messenger.compose.listAttachments(tab.id);
+    target = { tab: tab, details: details, attachments: attachments };
+
+    // 設定値の取得
+    let settingValues = await Utilities.getSettingValues();
+
+    // チェック項目数の取得
+    let checkItemsNum = await getCheckItemsNum(target, settingValues);
     
-    // 確認画面で使うデータをtargetオブジェクトにまとめる
-    messenger.compose.listAttachments(tab.id)
-    .then((attachments) => {
-        target = { tab: tab, details: details, attachments: attachments };
-    });
+    // チェック項目が1つ以上ある または 確認画面を表示させない設定がOFFの場合
+    if (checkItemsNum > 0 || !settingValues['disableConfirmationScreen']) {
+
+        // 確認画面を表示
+        target.window = await browser.windows.create({
+            height: 620,
+            width:  820,
+            url:    'check/check.html',
+            type:   'popup'
+        });
     
-    browser.windows.create({
-        height: 620,
-        width:  820,
-        url:    'check/check.html',
-        type:   'popup'
-    })
-    .then(window => {
-        target.window = window; 
-    });
+        return new Promise(resolve => {
+            map1.set(tab.id, resolve);
+        });
     
-    return new Promise(resolve => {
-        map1.set(tab.id, resolve);
-    });
+    // 確認画面を表示しない場合
+    } else {
+
+        // 後で送信（送信トレイに入れる）        
+        if (settingValues['sendLaterDefault']) {
+            
+            target.mode = 'sendLater';
+            return new Promise(resolve => {
+                resolve({ cancel: true });
+                setTimeout(() => {
+                    messenger.compose.sendMessage(tab.id, { mode: 'sendLater' });
+                });
+            });
+        }
+    }
 });
 
 // 確認画面とのデータ交換

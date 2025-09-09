@@ -121,5 +121,11 @@
     },
     "disabledEmailDomain": {
         "message": "灰色表示のメールアドレスまたはドメインは、設定でチェック対象外になっています。"
+    },
+    "disableConfirmationScreen": {
+        "message": "チェック項目がない場合は、確認画面を表示させない。"
+    },
+    "disableConfirmationScreenDescription": {
+        "message": "チェック項目が1つもないときに確認画面を表示したくない場合は、この設定にチェックを入れてください。"
     }
 }

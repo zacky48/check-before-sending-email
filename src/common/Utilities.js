@@ -82,7 +82,8 @@ export class Utilities {
             "destinationEmailAddress":  true,
             "attachment":               true,
             "senderAllowList":          [],
-            "destinationAllowList":     []  // v0.3.0までキー名は「allowList」だった
+            "destinationAllowList":     [], // v0.3.0までキー名は「allowList」だった
+            "disableConfirmationScreen": false,
         };
 
         // 設定値オブジェクト取得

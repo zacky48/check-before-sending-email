@@ -112,6 +112,10 @@ browser.compose.onBeforeSend.addListener(async (tab, details) => {
                     messenger.compose.sendMessage(tab.id, { mode: 'sendLater' });
                 });
             });
+
+        // 送信    
+        } else {           
+            clearTarget();
         }
     }
 });

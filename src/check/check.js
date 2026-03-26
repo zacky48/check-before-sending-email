@@ -113,7 +113,9 @@ function updateCheckLists() {
     if (CU.getCheckItemsNum() === checkedBoxes) {
         
         // 見出しの背景色を変える
-        header.style.backgroundColor = '#99ff99';
+        // header.style.backgroundColor = '#99ff99';
+        let header = document.getElementById('header');
+        header.className = 'check-complete';
         
         // 後で送信
         let preExecMesg = '';

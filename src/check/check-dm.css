@@ -262,16 +262,103 @@ input#cancel:active {
     border: 2px blue solid;
 }
 
-/* ヘッダの背景色 */
-#header.check-complete { background-color: #99ff99; }
-#header.risk-low { background-color: #ffff43; }
-#header.risk-mid { background-color: #ffcc99; }
-#header.risk-high { background-color: #ff9999; }
-#header.risk-critical { background-color: #ff99ff; }
-
 /* スペーサー */
 div.space05 { height: 5px; font-size: 0; }
 div.space10 { height: 10px; font-size: 0; }
 div.space20 { height: 20px; font-size: 0; }
 div.space30 { height: 30px; font-size: 0; }
 div.space50 { height: 50px; font-size: 0; }
+
+
+/* ============================================================
+   ダークモード
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+
+    body {
+        background-color: #1e1e1e;
+        color: #e8e8e8;
+    }
+
+    /* 見出しエリア */
+    div#header {
+        background-color: #1e1e1e;
+        border-bottom-color: #444;
+    }
+
+    /* はじめのメッセージ */
+    div.mesg-box {
+        background-color: #1a3333;
+        border-color: #336666;
+        color: #e8e8e8;
+    }
+
+    /* テーブル全般 */
+    table.main td {
+        border-color: #555;
+    }
+
+    /* 項目名セル */
+    table.main td.item-name {
+        background-color: #3a3a3a;
+        color: #e8e8e8;
+    }
+
+    /* 添付ファイルセル */
+    table.main td.attachments {
+        background-color: #3a1a3a;
+        color: #ff9999;
+    }
+
+    /* 除外アドレスセル */
+    table.main td.check-exclude {
+        background-color: #2a2a2a;
+        color: #888;
+    }
+
+    /* ドメイン・アドレスリスト名・サイズなどのグレー系 */
+    span.domain,
+    span.addressListName,
+    span.size,
+    div#disabledCheckItems {
+        color: #666;
+    }
+
+    /* ロイヤルブルーは暗背景でも視認性が高いためそのまま維持 */
+    /* span.numstyle { color: #4169e1; } */
+
+    /* 本文テキストエリア */
+    textarea.mailbody {
+        background-color: #2a2a2a;
+        color: #e8e8e8;
+        border: 1px solid #555;
+    }
+
+    /* 注意文: 暗背景では純赤が読みづらいため少し明るく */
+    .attention {
+        color: #ff6666;
+    }
+
+    /* hr */
+    hr {
+        border-color: #444;
+    }
+
+    /* 非活性ボタン */
+    input.disabledButton {
+        background-color: #2a2a2a;
+        border-color: #555;
+        color: #888;
+    }
+
+    /* 後で送信ボタン: 青系はそのまま維持 */
+
+    /* 送信ボタン: 黄背景＋赤文字は暗背景でも十分視認できるためそのまま維持 */
+
+    /* キャンセルボタン */
+    input#cancel {
+        background-color: #2a2a2a;
+        color: #e8e8e8;
+        border-color: #666;
+    }
+}

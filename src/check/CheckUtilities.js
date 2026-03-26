@@ -47,6 +47,21 @@ export class CheckUtilities {
     setRiskScoreColor() {
         let riskScore   = this.#checkItemsNum;
         let header      = document.getElementById('header');
+
+        if (riskScore <= 4) {
+            header.className = 'risk-low';
+        } else if (5 <= riskScore && riskScore <= 8) {
+            header.className = 'risk-mid';
+        } else if (9 <= riskScore && riskScore <= 12) {
+            header.className = 'risk-high';
+        } else if (13 <= riskScore) {
+            header.className = 'risk-critical';
+        }
+    }    
+    /*
+    setRiskScoreColor() {
+        let riskScore   = this.#checkItemsNum;
+        let header      = document.getElementById('header');
     
         if (riskScore <= 4) {
             header.style.backgroundColor = '#ffff43';
@@ -58,6 +73,7 @@ export class CheckUtilities {
             header.style.backgroundColor = '#ff99ff';
         }
     }
+    */
     
     // メールアドレスに表示用のスタイルを設定する
     decorateEmailAddress(str) {

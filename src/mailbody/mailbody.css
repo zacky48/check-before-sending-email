@@ -7,3 +7,11 @@ div#mailbody {
     font-size: 13px;
     padding: 10px;
 }
+
+/* ダークモード */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1e1e1e;
+        color: #e8e8e8;
+    }
+}

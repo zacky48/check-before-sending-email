@@ -269,6 +269,16 @@ input#cancel:active {
 #header.risk-high { background-color: #ff9999; }
 #header.risk-critical { background-color: #ff99ff; }
 
+/* 背景色 */
+.bg-color01 { background-color: #e5ffcc; }
+.bg-color02 { background-color: #ffffcc; }
+.bg-color03 { background-color: #ffe5cc; }
+.bg-color04 { background-color: #ccccff; }
+.bg-color05 { background-color: #cce5ff; }
+.bg-color06 { background-color: #ccffff; }
+.bg-color07 { background-color: #ccffe5; }
+.bg-color08 { background-color: #ccffcc; }
+
 /* スペーサー */
 div.space05 { height: 5px; font-size: 0; }
 div.space10 { height: 10px; font-size: 0; }

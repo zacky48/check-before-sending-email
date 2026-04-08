@@ -347,6 +347,11 @@ div.space50 { height: 50px; font-size: 0; }
         border: 1px solid #555;
     }
 
+    /* 本文を別ウィンドウで表示のリンク */
+    a#openBodyWindow {
+        color: #99c3ff;
+    }
+
     /* 設定で無効化されているチェック項目 */
     div#disabledCheckItems {
         color: #666;

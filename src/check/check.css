@@ -262,9 +262,162 @@ input#cancel:active {
     border: 2px blue solid;
 }
 
+/* ヘッダの背景色 */
+#header.check-complete { background-color: #99ff99; }
+#header.risk-low { background-color: #ffff43; }
+#header.risk-mid { background-color: #ffcc99; }
+#header.risk-high { background-color: #ff9999; }
+#header.risk-critical { background-color: #ff99ff; }
+
+/* 背景色 */
+.bg-color01 { background-color: #e5ffcc; }
+.bg-color02 { background-color: #ffffcc; }
+.bg-color03 { background-color: #ffe5cc; }
+.bg-color04 { background-color: #ccccff; }
+.bg-color05 { background-color: #cce5ff; }
+.bg-color06 { background-color: #ccffff; }
+.bg-color07 { background-color: #ccffe5; }
+.bg-color08 { background-color: #ccffcc; }
+
 /* スペーサー */
 div.space05 { height: 5px; font-size: 0; }
 div.space10 { height: 10px; font-size: 0; }
 div.space20 { height: 20px; font-size: 0; }
 div.space30 { height: 30px; font-size: 0; }
 div.space50 { height: 50px; font-size: 0; }
+
+
+/* ============================================================
+   ダークモード
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+
+    body {
+        background-color: #1e1e1e;
+        color: #e0e0e0;
+    }
+
+    /* 見出し */
+    div#header {
+        border-bottom-color: #444;
+        background-color: #1e1e1e;
+    }
+
+    /* はじめのメッセージ */
+    div.mesg-box {
+        border-color: #007a7a;
+        background-color: #003a3a;
+        color: #b0f0f0;
+    }
+
+    /* チェックリストのテーブル */
+    table.main td {
+        border-color: #555;
+    }
+    table.main td.item-name {
+        background-color: #3a3a3a;
+        color: #cccccc;
+    }
+    table.main td.attachments {
+        color: #ff8080;
+        background-color: #3a1a3a;
+    }
+    table.main td.check-exclude {
+        color: #777;
+        background-color: #2a2a2a;
+    }
+
+    /* メールアドレスとドメインの表示 */
+    span.numstyle {
+        color: #7ba7f5;
+    }
+    span.domain {
+        color: #666;
+    }
+
+    /* アドレスリスト名 */
+    span.addressListName {
+        color: #666;
+    }
+
+    /* 本文の表示 */
+    textarea.mailbody {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        border: 1px solid #555;
+    }
+
+    /* 本文を別ウィンドウで表示のリンク */
+    a#openBodyWindow {
+        color: #99c3ff;
+    }
+
+    /* 設定で無効化されているチェック項目 */
+    div#disabledCheckItems {
+        color: #666;
+    }
+
+    /* 注意文 */
+    .attention {
+        color: #ff8080;
+    }
+
+    /* hr */
+    hr {
+        border-color: #444;
+    }
+
+    /* 非活性ボタン */
+    input.disabledButton {
+        background-color: #2a2a2a;
+        border-color: #444;
+        color: #777;
+    }
+
+    /* 後で送信ボタン */
+    input.sendLater {
+        background-color: #1a3a8a;
+        border-color: #555;
+        color: #cce0ff;
+    }
+    input.sendLater:active {
+        border-color: #4466cc;
+    }
+
+    /* 送信ボタン */
+    input.send {
+        background-color: #4a4a00;
+        color: #ff8080;
+        border-color: #666;
+    }
+    input.send:active {
+        border-color: #4466cc;
+    }
+
+    /* キャンセルボタン */
+    input#cancel {
+        background-color: #2a2a2a;
+        color: #e0e0e0;
+        border-color: #555;
+    }
+    input#cancel:active {
+        border-color: #4466cc;
+    }
+
+    /* ヘッダの背景色（やや暗めに） */
+    #header.check-complete { background-color: #1a5a1a; }
+    #header.risk-low       { background-color: #4a4a00; }
+    #header.risk-mid       { background-color: #4a2e00; }
+    #header.risk-high      { background-color: #5a1a1a; }
+    #header.risk-critical  { background-color: #4a1a4a; }
+
+    /* 背景色（彩度・明度を落とした暗めのトーン） */
+    .bg-color01 { background-color: #1e3010; }
+    .bg-color02 { background-color: #303010; }
+    .bg-color03 { background-color: #302010; }
+    .bg-color04 { background-color: #101030; }
+    .bg-color05 { background-color: #102030; }
+    .bg-color06 { background-color: #103030; }
+    .bg-color07 { background-color: #103020; }
+    .bg-color08 { background-color: #103010; }
+}

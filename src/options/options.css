@@ -19,6 +19,7 @@ textarea#senderAllowList {
     width: 400px;
     height: 50px;
     background-color: #ffffef;
+    color: black;
 }
 
 /* チェックを除外する送信先メールアドレス・ドメイン */
@@ -27,6 +28,29 @@ textarea#destinationAllowList {
     width: 400px;
     height: 80px;
     background-color: #efffef;
+    color: black;
+}
+
+/* ダークモード */
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1e1e1e;
+        color: #e8e8e8;
+    }
+
+    /* チェックを除外する送信元メールアドレス・ドメイン */
+    textarea#senderAllowList {
+        background-color: #2e2e1a;
+        color: #e8e8e8;
+        border: 1px solid #555;
+    }
+
+    /* チェックを除外する送信先メールアドレス・ドメイン */
+    textarea#destinationAllowList {
+        background-color: #1a2e1a;
+        color: #e8e8e8;
+        border: 1px solid #555;
+    }
 }
 
 /* スペーサー */

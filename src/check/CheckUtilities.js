@@ -47,6 +47,21 @@ export class CheckUtilities {
     setRiskScoreColor() {
         let riskScore   = this.#checkItemsNum;
         let header      = document.getElementById('header');
+
+        if (riskScore <= 4) {
+            header.className = 'risk-low';
+        } else if (5 <= riskScore && riskScore <= 8) {
+            header.className = 'risk-mid';
+        } else if (9 <= riskScore && riskScore <= 12) {
+            header.className = 'risk-high';
+        } else if (13 <= riskScore) {
+            header.className = 'risk-critical';
+        }
+    }    
+    /*
+    setRiskScoreColor() {
+        let riskScore   = this.#checkItemsNum;
+        let header      = document.getElementById('header');
     
         if (riskScore <= 4) {
             header.style.backgroundColor = '#ffff43';
@@ -58,6 +73,7 @@ export class CheckUtilities {
             header.style.backgroundColor = '#ff99ff';
         }
     }
+    */
     
     // メールアドレスに表示用のスタイルを設定する
     decorateEmailAddress(str) {
@@ -287,9 +303,18 @@ export class CheckUtilities {
         // 送信先メールアドレスを抽出する
         let destEmailAddresses = await this.extractDestEmailAddresses();
 
-        // リストの背景色
-        let colorPool = ['#e5ffcc', '#ffffcc', '#ffe5cc', '#ccccff', '#cce5ff', '#ccffff', '#ccffe5', '#ccffcc'];
-        
+        // 背景色クラス
+        let colorPool = [
+            'bg-color01',
+            'bg-color02',
+            'bg-color03',
+            'bg-color04',
+            'bg-color05',
+            'bg-color06',
+            'bg-color07',
+            'bg-color08'
+        ];
+
         let list    = '';
         let color   = '';
         for (let i = 0; i < destEmailAddresses.length; i++) {
@@ -306,7 +331,6 @@ export class CheckUtilities {
     }
     makeDestEmailAddressesListHelper(d, color) {
         let r = '';
-        let style = "style='background-color: " + color + ";'";
 
         // チェック除外になっているメールアドレス数をカウント
         let checkExcludeCount = 0;
@@ -337,10 +361,10 @@ export class CheckUtilities {
                 r += "<td class='check-exclude'>" + domain + "</td>";
             } else {
                 domain = this.addNumberStyle(Utilities.sanitaize(d['domain']));
-                r += "<td class='detail' " + style + "><span class='mailaddr'>" + domain + "</span></td>";
+                r += "<td class='detail " + color + "'><span class='mailaddr'>" + domain + "</span></td>";
             }
         } else {
-            r += "<td class='detail' " + style + "><span class='mailaddr'></span></td>";
+            r += "<td class='detail " + color + "'><span class='mailaddr'></span></td>";
         }
         r += "<tr>";
         
@@ -358,7 +382,7 @@ export class CheckUtilities {
             } else {
                 r += "<td><input type='checkbox' class='checkbox' name='checkitem'></td>";
                 address = this.decorateEmailAddress(Utilities.sanitaize(d['dests'][i]['address']));
-                r += "<td class='detail' " + style + "><span class='mailaddr'>" + address + "</span>";
+                r += "<td class='detail " + color + "'><span class='mailaddr'>" + address + "</span>";
             }
 
             if (d['dests'][i]['addressListName']) {
